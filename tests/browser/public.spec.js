@@ -76,14 +76,13 @@ test('public site and source download work without a team account', async ({ pag
     const [expected, file] = line.split('  ')
     expect(createHash('sha256').update(archive[`${prefix}${file}`]).digest('hex')).toBe(expected)
   }
-  const credits = page.locator('summary').filter({ hasText: /^Photo credits/ })
-  await credits.focus()
-  await page.keyboard.press('Enter')
-  await expect(credits.locator('..')).toHaveAttribute('open', '')
+  await page.getByRole('link', { name: 'Credits', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Photo credits' })).toBeVisible()
   for (const athlete of athleteNames) {
-    await expect(credits.locator('..')).toContainText(athlete)
+    await expect(page.getByRole('main')).toContainText(athlete)
   }
-  const creditDownload = await request.get(await page.getByRole('link', { name: 'asset credits', exact: true }).first().getAttribute('href'))
+  await expectNoOverflow(page)
+  const creditDownload = await request.get(await page.getByRole('link', { name: 'full asset record', exact: true }).getAttribute('href'))
   expect(creditDownload.ok()).toBeTruthy()
   const photoCredits = await creditDownload.json()
   expect(photoCredits).toEqual(JSON.parse(strFromU8(archive[`${prefix}src/lib/athleteCredits.json`])))
@@ -125,6 +124,7 @@ test('public site and source download work without a team account', async ({ pag
     expect(license.ok()).toBeTruthy()
     expect(Buffer.compare(await license.body(), Buffer.from(archive[`${prefix}public${src}`]))).toBe(0)
   }
+  await page.goto('/')
   await page.getByRole('link', { name: 'Setup guide', exact: true }).first().click()
   await expect(page.getByRole('heading', { name: 'Give your team a home.' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Start your team →' })).toHaveAttribute('href', '/#/start')

@@ -7,6 +7,7 @@ const DemoTeamApp = lazy(() => import('./components/DemoTeamApp'))
 const LiveTeamApp = lazy(() => import('./components/LiveTeamApp'))
 const SetupGuide = lazy(() => import('./components/SetupGuide'))
 const StartTeam = lazy(() => import('./components/StartTeam'))
+const PhotoCredits = lazy(() => import('./components/PhotoCredits'))
 const DesktopSetup = lazy(() => import('./components/DesktopSetup'))
 const subscribe = (notify) => {
   window.addEventListener('hashchange', notify)
@@ -41,7 +42,7 @@ export default function App() {
   return (
     <AppErrorBoundary>
       <Suspense fallback={<div role="status" className="grid min-h-screen place-items-center bg-[#f7f6ef] font-semibold text-emerald-950">Loading OpenSport…</div>}>
-        {mode === 'desktop' ? <DesktopSetup /> : demo ? <DemoTeamApp /> : start ? <StartTeam /> : route === '#/setup' || window.location.pathname === '/setup' ? <SetupGuide /> : mode === 'team' ? <LiveTeamApp /> : <LandingPage />}
+        {mode === 'desktop' ? <DesktopSetup /> : demo ? <DemoTeamApp /> : start ? <StartTeam /> : route === '#/credits' ? <PhotoCredits /> : route === '#/setup' || window.location.pathname === '/setup' ? <SetupGuide /> : mode === 'team' ? <LiveTeamApp /> : <LandingPage />}
       </Suspense>
     </AppErrorBoundary>
   )
