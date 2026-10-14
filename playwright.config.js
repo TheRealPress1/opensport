@@ -14,10 +14,19 @@ export default defineConfig({
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
   ],
-  webServer: {
-    command: 'npm run dev -- --host 127.0.0.1 --port 4178 --strictPort',
-    url: 'http://127.0.0.1:4178',
-    reuseExistingServer: false,
-    env: { VITE_APP_MODE: 'project', VITE_SUPABASE_URL: 'https://demo-must-never-connect.invalid', VITE_SUPABASE_ANON_KEY: 'public-looking-test-key' },
-  },
+  webServer: [
+    {
+      command: 'npm run dev -- --host 127.0.0.1 --port 4178 --strictPort',
+      url: 'http://127.0.0.1:4178',
+      reuseExistingServer: false,
+      env: { VITE_APP_MODE: 'project', VITE_SUPABASE_URL: 'https://demo-must-never-connect.invalid', VITE_SUPABASE_ANON_KEY: 'public-looking-test-key' },
+    },
+    {
+      // A one-click cloud install with a placeholder database; tests script every response.
+      command: 'npx vite --host 127.0.0.1 --port 4179 --strictPort',
+      url: 'http://127.0.0.1:4179',
+      reuseExistingServer: false,
+      env: { VITE_APP_MODE: 'team', VITE_OPENSPORT_CLOUD: '1', VITE_SUPABASE_URL: 'https://cloud-test.invalid', VITE_SUPABASE_ANON_KEY: 'sb_publishable_cloud_test' },
+    },
+  ],
 })

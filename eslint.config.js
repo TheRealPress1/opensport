@@ -27,7 +27,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['scripts/**/*.mjs', 'desktop/**/*.{mjs,cjs}', 'tests/**/*.{js,mjs}', 'supabase/tests/**/*.mjs', 'playwright.config.js'],
+    files: ['scripts/**/*.mjs', 'desktop/**/*.{mjs,cjs}', 'tests/**/*.{js,mjs}', 'supabase/tests/**/*.mjs', 'supabase/functions/**/*.js', 'api/**/*.js', 'server/**/*.js', 'playwright.config.js', 'vite.config.js'],
     languageOptions: { globals: { ...globals.node, ...globals.browser } },
     rules: { ...js.configs.recommended.rules },
   },

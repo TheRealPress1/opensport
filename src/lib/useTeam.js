@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase, supabaseConfigured } from './supabase'
+import { cloudInstall, cloudRequest } from './cloud'
 import { DEFAULT_TEAM } from './config'
 import { normalizeTime, calendarRange } from './utils'
 
@@ -173,6 +174,12 @@ export function useTeam() {
   }
   const adminAction = async body => {
     requireClient()
+    if (cloudInstall) {
+      const { data: { session: current } } = await supabase.auth.getSession()
+      const data = await cloudRequest('/api/team-admin', { method: 'POST', body, token: current?.access_token })
+      await loadAll(session)
+      return data
+    }
     const result = await supabase.functions.invoke('team-admin', { body })
     if (result.error) {
       let message = result.error.message

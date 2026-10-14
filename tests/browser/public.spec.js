@@ -69,7 +69,7 @@ test('public site and source download work without a team account', async ({ pag
   expect(download.ok()).toBeTruthy()
   const archive = unzipSync(await download.body())
   const prefix = 'opensport-0.1.0/'
-  for (const file of ['README.md', 'LICENSE', 'package-lock.json', 'Dockerfile', 'scripts/ops.sh', 'docs/SELF_HOSTING.md', 'supabase/migrations/20261012000100_single_team.sql', 'public/fonts/BarlowCondensed-Bold.ttf', 'public/fonts/BarlowCondensed-ExtraBold.ttf', 'public/fonts/OFL-BarlowCondensed.txt', 'public/images/demo-workspace.png', 'src/lib/athleteCredits.json', 'public/athletes/licenses/CC-BY-2.0.txt', 'public/athletes/licenses/CC-BY-SA-2.0.txt', 'public/athletes/licenses/CC-BY-SA-3.0.txt']) expect(archive[`${prefix}${file}`]).toBeTruthy()
+  for (const file of ['README.md', 'LICENSE', 'package-lock.json', 'Dockerfile', 'scripts/ops.sh', 'docs/SELF_HOSTING.md', 'vercel.json', 'api/setup.js', 'server/setup.js', 'scripts/cloud-migrate.mjs', 'supabase/migrations/20261012000100_single_team.sql', 'public/fonts/BarlowCondensed-Bold.ttf', 'public/fonts/BarlowCondensed-ExtraBold.ttf', 'public/fonts/OFL-BarlowCondensed.txt', 'public/images/demo-workspace.png', 'src/lib/athleteCredits.json', 'public/athletes/licenses/CC-BY-2.0.txt', 'public/athletes/licenses/CC-BY-SA-2.0.txt', 'public/athletes/licenses/CC-BY-SA-3.0.txt']) expect(archive[`${prefix}${file}`]).toBeTruthy()
   expect(Object.keys(archive).some(name => /(?:^|\/)\.(?:context|opensport|git)\//.test(name) || name.endsWith('/.env') || name.includes('.env.local'))).toBeFalsy()
   for (const line of strFromU8(archive[`${prefix}SOURCE_MANIFEST.sha256`]).trim().split('\n')) {
     const [expected, file] = line.split('  ')
