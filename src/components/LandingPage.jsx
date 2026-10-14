@@ -14,6 +14,8 @@ const storyPhotos = [
   { src: '/images/story/babson-team.webp', width: 1024, height: 683, alt: 'Babson soccer teammates on a turf field, one holding up a number 17 jersey.' },
 ]
 
+const tickerItems = ['Free', 'Open source', 'No ads', 'No subscription', 'Your data, your host', 'Built by a player']
+
 // TeamSnap claims are sourced in the comparison note; re-check them before each release.
 const comparison = [
   ['Price', 'Free to start. Paid upgrades unlock availability tracking and bigger rosters.', 'Free, RSVPs included. Hosting costs depend on your setup.'],
@@ -39,7 +41,6 @@ export default function LandingPage() {
       </header>
       <main id="main" tabIndex={-1}>
         <section className="os-hero os-container" aria-labelledby="hero-heading">
-          <p className="os-eyebrow os-hero-eyebrow"><span className="os-asterisk" aria-hidden="true">✳</span> FOR THE LOVE OF THE GAME</p>
           <h1 id="hero-heading">Behind every great athlete{' '}<br /><span>is a team.</span></h1>
           <p className="os-hero-alternative">The free, open-source alternative to <strong>TeamSnap</strong>.</p>
           <p className="os-hero-description">Schedules, rosters, and RSVPs in one place. No ads, no subscription,<br className="os-desktop-break" /> and your team’s data stays on a host you control.</p>
@@ -70,7 +71,8 @@ export default function LandingPage() {
             <Feature number="03" title="Keep the season’s story." description="Record final scores for any sport. Soccer teams can also publish lineups and track goals and assists." detail="RESULTS + SOCCER TOOLS" />
           </div>
         </section>
-        <section className="os-compare os-container" id="compare" aria-labelledby="compare-heading">
+        <Ticker />
+        <section className="os-compare" id="compare" aria-labelledby="compare-heading"><div className="os-container">
           <div className="os-section-heading"><div><p className="os-eyebrow">02 / OPENSPORT VS. TEAMSNAP</p><h2 id="compare-heading">TeamSnap is huge.<br /><span>OpenSport is yours.</span></h2></div><p className="os-section-aside">TeamSnap is a big business, with 30 million users by its own count. OpenSport keeps the everyday essentials and makes them free, open source, and yours to run.</p></div>
           {/* Explicit roles keep table semantics when small screens restyle the rows as grids. */}
           <table className="os-compare-table" role="table">
@@ -79,6 +81,7 @@ export default function LandingPage() {
             <tbody role="rowgroup">{comparison.map(([topic, teamSnap, openSport]) => <tr key={topic} role="row"><th scope="row" role="rowheader">{topic}</th><td role="cell">{teamSnap}</td><td role="cell" className="os-compare-us">{openSport}</td></tr>)}</tbody>
           </table>
           <p className="os-compare-note">TeamSnap details come from its <a href="https://www.teamsnap.com/pricing" target="_blank" rel="noreferrer">pricing page</a> and <a href="https://helpme.teamsnap.com/article/227-managing-your-teamsnap-plus-subscription" target="_blank" rel="noreferrer">help center</a>, checked October 2026. TeamSnap is a trademark of its owner. OpenSport is independent and not affiliated with or endorsed by TeamSnap.</p>
+          </div>
         </section>
         <section className="os-story" id="story" aria-labelledby="story-heading">
           <div className="os-container os-story-layout">
@@ -109,6 +112,10 @@ function AthletePortrait({ athlete }) {
   // Match the poster's responsive height so small screens fetch smaller cutouts.
   const sizes = `(max-width: 650px) ${37 * widthScale}vw, (max-width: 1050px) ${31 * widthScale}vw, (max-width: 1403px) ${29 * widthScale}vw, ${407 * widthScale}px`
   return <img data-athlete={athlete.id} className={`os-athlete os-athlete-${athlete.id}`} src={athlete.image} srcSet={`${athlete.smallImage} ${athlete.smallWidth}w, ${athlete.image} ${athlete.width}w`} sizes={sizes} width={athlete.width} height={athlete.height} alt={athlete.name} style={{ '--athlete-scale': scale, visibility: failed ? 'hidden' : undefined }} decoding="async" fetchPriority={athlete.id === 'lebron' ? 'high' : 'auto'} onError={() => setFailed(true)} />
+}
+// Two identical halves scroll by exactly half the track, so the loop has no seam.
+function Ticker() {
+  return <div className="os-ticker" aria-hidden="true"><div className="os-ticker-track">{[...tickerItems, ...tickerItems].map((item, index) => <span key={index}>{item}<i>✳</i></span>)}</div></div>
 }
 function ProductVideo() {
   const video = useRef(null)
