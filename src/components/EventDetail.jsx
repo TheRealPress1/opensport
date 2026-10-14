@@ -61,7 +61,7 @@ export default function EventDetail({
   }
 
   const resultLabelColor = {
-    WIN: 'text-green-600',
+    WIN: 'text-brand-600',
     LOSS: 'text-red-600',
     DRAW: 'text-amber-600',
   }[resultLabel] || ''
@@ -116,7 +116,7 @@ export default function EventDetail({
     } catch (cause) { setError(cause.message) }
   }
 
-  const inputClass = "w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+  const inputClass = "w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
 
   return (
     <>
@@ -145,7 +145,7 @@ export default function EventDetail({
                 />
               ) : (
                 <>
-                  <h2 className="text-2xl font-bold text-gray-900">{mainTitle}</h2>
+                  <h2 className="font-display text-[34px] font-bold leading-none tracking-tight text-gray-900">{mainTitle}</h2>
                   {subtitle && (
                     <p className="text-sm text-gray-600 mt-1">{subtitle}</p>
                   )}
@@ -156,7 +156,7 @@ export default function EventDetail({
               {isAdmin && !editing && (
                 <button
                   onClick={() => setEditing(true)}
-                  className="text-gray-400 hover:text-violet-600 transition-colors"
+                  className="text-gray-400 hover:text-brand-600 transition-colors"
                   title="Edit event"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,7 +248,7 @@ export default function EventDetail({
                         href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(event.location)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-violet-600 hover:text-violet-800 underline underline-offset-2 flex items-center gap-1.5 text-sm"
+                        className="text-brand-600 hover:text-brand-800 underline underline-offset-2 flex items-center gap-1.5 text-sm"
                       >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -310,7 +310,7 @@ export default function EventDetail({
                         onClick={() => changeRsvp('going')}
                         className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-colors ${
                           myRsvp?.status === 'going'
-                            ? 'bg-green-600 text-white'
+                            ? 'bg-brand-600 text-white'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                       >
@@ -321,7 +321,7 @@ export default function EventDetail({
                         onClick={() => changeRsvp('maybe')}
                         className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-colors ${
                           myRsvp?.status === 'maybe'
-                            ? 'bg-amber-500 text-white'
+                            ? 'bg-amber-400 text-gray-900'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                       >
@@ -345,7 +345,7 @@ export default function EventDetail({
                 {/* Attendee Lists */}
                 <div className="pt-2 border-t border-gray-100 space-y-4">
                   {[
-                    { label: 'Going', list: goingRsvps, status: 'going', bg: 'bg-green-100', text: 'text-green-700', avatarBg: 'bg-green-200' },
+                    { label: 'Going', list: goingRsvps, status: 'going', bg: 'bg-brand-100', text: 'text-brand-700', avatarBg: 'bg-brand-200' },
                     { label: 'Maybe', list: maybeRsvps, status: 'maybe', bg: 'bg-amber-100', text: 'text-amber-700', avatarBg: 'bg-amber-200' },
                     { label: 'Not Going', list: cantRsvps, status: 'cant', bg: 'bg-red-100', text: 'text-red-700', avatarBg: 'bg-red-200' },
                   ].filter(g => g.list.length > 0).map(group => (
@@ -379,7 +379,7 @@ export default function EventDetail({
                                 <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-30 w-44 overflow-hidden">
                                   {group.status !== 'going' && (
                                     <button type="button" onClick={() => changeRsvp('going', rsvp.member_id)}
-                                      className="w-full text-left px-3 py-2 text-sm hover:bg-green-50 text-green-700">
+                                      className="w-full text-left px-3 py-2 text-sm hover:bg-brand-50 text-brand-700">
                                       Move to Going
                                     </button>
                                   )}
@@ -396,7 +396,7 @@ export default function EventDetail({
                                     </button>
                                   )}
                                   {m?.phone && (
-                                    <a href={`https://wa.me/${m.phone.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="block w-full text-left px-3 py-2 text-sm hover:bg-green-50 text-green-700 border-t border-gray-100">
+                                    <a href={`https://wa.me/${m.phone.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="block w-full text-left px-3 py-2 text-sm hover:bg-brand-50 text-brand-700 border-t border-gray-100">
                                       WhatsApp {m.name.split(' ')[0]}
                                     </a>
                                   )}
@@ -426,7 +426,7 @@ export default function EventDetail({
                 <button
                   onClick={handleSaveEdit}
                   disabled={saving}
-                  className="flex-1 py-2 px-4 rounded-lg font-medium text-sm bg-violet-600 text-white hover:bg-violet-700 transition-colors disabled:opacity-50"
+                  className="flex-1 py-2 px-4 rounded-lg font-medium text-sm bg-brand-600 text-white hover:bg-brand-700 transition-colors disabled:opacity-50"
                 >
                   {saving ? 'Saving...' : 'Save Changes'}
                 </button>
@@ -476,7 +476,7 @@ export default function EventDetail({
                     </button>
                   </div>
                 </div>}
-                {!settings.demo && settings.organizer_whatsapp && <a href={`https://wa.me/${settings.organizer_whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="block text-sm text-green-700 underline">Contact {settings.organizer_name || 'organizer'} on WhatsApp</a>}
+                {!settings.demo && settings.organizer_whatsapp && <a href={`https://wa.me/${settings.organizer_whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="block text-sm text-brand-700 underline">Contact {settings.organizer_name || 'organizer'} on WhatsApp</a>}
 
                 {/* Admin Actions */}
                 {settings.scores_enabled && isAdmin && event.type?.toLowerCase() === 'game' && (
@@ -496,7 +496,7 @@ export default function EventDetail({
                   <div>
                     <button
                       onClick={onLineup}
-                      className="w-full py-2.5 px-4 rounded-lg font-medium text-sm bg-violet-100 text-violet-700 hover:bg-violet-200 transition-colors flex items-center justify-center gap-2"
+                      className="w-full py-2.5 px-4 rounded-lg font-medium text-sm bg-brand-100 text-brand-700 hover:bg-brand-200 transition-colors flex items-center justify-center gap-2"
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />

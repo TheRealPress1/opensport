@@ -212,11 +212,11 @@ export default function CalendarView({
                   <div
                     key={di}
                     className={`min-h-[70px] p-1.5 border-r last:border-r-0 border-gray-200 ${
-                      isCurrentDay ? 'bg-violet-50' : 'bg-white'
+                      isCurrentDay ? 'bg-brand-50' : 'bg-white'
                     }`}
                   >
                     <div className={`text-xs font-medium mb-1 w-6 h-6 flex items-center justify-center rounded-full ${
-                      isCurrentDay ? 'bg-violet-600 text-white' : 'text-gray-700'
+                      isCurrentDay ? 'bg-brand-600 text-white' : 'text-gray-700'
                     }`}>
                       {day}
                     </div>
@@ -226,7 +226,7 @@ export default function CalendarView({
                           key={ev.id}
                           onClick={() => onSelectEvent(ev.id)}
                           className={`w-full text-left px-1.5 py-0.5 rounded text-[11px] font-medium truncate block ${
-                            ev.type?.toLowerCase() === 'game' ? 'bg-violet-100 text-violet-700' :
+                            ev.type?.toLowerCase() === 'game' ? 'bg-brand-100 text-brand-700' :
                             ev.type?.toLowerCase() === 'practice' ? 'bg-cyan-100 text-cyan-700' :
                             'bg-amber-100 text-amber-700'
                           } hover:opacity-80 transition-opacity`}
@@ -260,12 +260,12 @@ export default function CalendarView({
                 <div
                   key={di}
                   className={`min-h-[200px] p-2 border-r last:border-r-0 border-gray-200 ${
-                    isCurrentDay ? 'bg-violet-50' : 'bg-white'
+                    isCurrentDay ? 'bg-brand-50' : 'bg-white'
                   }`}
                 >
                   <div className="text-center mb-2">
                     <div className={`text-sm font-medium w-8 h-8 flex items-center justify-center rounded-full mx-auto ${
-                      isCurrentDay ? 'bg-violet-600 text-white' : 'text-gray-700'
+                      isCurrentDay ? 'bg-brand-600 text-white' : 'text-gray-700'
                     }`}>
                       {date.getDate()}
                     </div>
@@ -279,7 +279,7 @@ export default function CalendarView({
                         key={ev.id}
                         onClick={() => onSelectEvent(ev.id)}
                         className={`w-full text-left p-1.5 rounded-lg text-xs ${
-                          ev.type?.toLowerCase() === 'game' ? 'bg-violet-100 text-violet-700' :
+                          ev.type?.toLowerCase() === 'game' ? 'bg-brand-100 text-brand-700' :
                           ev.type?.toLowerCase() === 'practice' ? 'bg-cyan-100 text-cyan-700' :
                           'bg-amber-100 text-amber-700'
                         } hover:opacity-80 transition-opacity`}
@@ -301,7 +301,7 @@ export default function CalendarView({
       {/* Legend */}
       <div className="flex items-center gap-4 mt-3 px-1">
         <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-violet-500" />
+          <span className="w-2.5 h-2.5 rounded-full bg-brand-500" />
           <span className="text-xs text-gray-500">Game</span>
         </div>
         <div className="flex items-center gap-1.5">

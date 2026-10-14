@@ -75,21 +75,21 @@ function TeamContent({ team, demo }) {
         <div className="max-w-2xl mx-auto px-4 py-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-3">
             <div className="min-w-0">
-              <p className="text-[10px] font-semibold uppercase text-violet-500">{APP_BRAND.name}</p>
-              <h1 className="text-lg font-bold text-gray-900 [overflow-wrap:anywhere]">{ACTIVE_TEAM.name}</h1>
-              <p className="text-xs text-gray-400">{ACTIVE_TEAM.season} season</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-accent">{APP_BRAND.name}</p>
+              <h1 className="mt-0.5 font-display text-[34px] font-bold uppercase leading-[0.95] tracking-tight text-gray-900 [overflow-wrap:anywhere]">{ACTIVE_TEAM.name}</h1>
+              <p className="mt-1 text-xs text-gray-500">{ACTIVE_TEAM.season} season</p>
             </div>
           </div>
           <div className="flex shrink-0 items-center justify-end gap-3">
             {team.isAdmin && !demo && (
               <button
                 onClick={() => setModal('addEvent')}
-                className="bg-violet-600 hover:bg-violet-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+                className="bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
               >
                 + Event
               </button>
             )}
-            {!demo && team.isAdmin && <button className="text-sm font-semibold text-violet-700" onClick={() => setModal('settings')}>Manage</button>}
+            {!demo && team.isAdmin && <button className="text-sm font-semibold text-brand-700" onClick={() => setModal('settings')}>Manage</button>}
             {!demo && <button
               onClick={() => setModal('editProfile')}
               className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-lg hover:bg-gray-200 transition-colors overflow-hidden"
@@ -114,10 +114,10 @@ function TeamContent({ team, demo }) {
               <button
                 key={t.id}
                 onClick={() => setTab(t.id)}
-                className={`flex-1 py-3 text-sm font-semibold text-center border-b-2 transition-colors ${
+                className={`flex-1 py-3.5 text-xs font-bold uppercase tracking-[0.14em] text-center border-b-[3px] transition-colors ${
                   activeTab === t.id
-                    ? 'border-violet-600 text-violet-600'
-                    : 'border-transparent text-gray-400 hover:text-gray-600'
+                    ? 'border-brand-600 text-gray-900'
+                    : 'border-transparent text-gray-500 hover:text-gray-900'
                 }`}
               >
                 {t.label}

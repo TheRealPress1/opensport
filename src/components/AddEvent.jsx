@@ -74,7 +74,7 @@ export default function AddEvent({ onSubmit, onClose }) {
                   key={et.value}
                   className={`flex-1 flex flex-col items-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition ${
                     type === et.value
-                      ? 'border-violet-500 bg-violet-50'
+                      ? 'border-brand-500 bg-brand-50'
                       : 'border-gray-200 bg-white hover:border-gray-300'
                   }`}
                 >
@@ -105,7 +105,7 @@ export default function AddEvent({ onSubmit, onClose }) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Saturday game"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition"
             />
           </div>
 
@@ -119,7 +119,7 @@ export default function AddEvent({ onSubmit, onClose }) {
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition"
             />
           </div>
 
@@ -134,7 +134,7 @@ export default function AddEvent({ onSubmit, onClose }) {
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition"
               />
             </div>
             <div>
@@ -146,7 +146,7 @@ export default function AddEvent({ onSubmit, onClose }) {
                 type="time"
                 value={end_time}
                 onChange={(e) => setEnd_time(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition"
               />
             </div>
           </div>
@@ -160,7 +160,7 @@ export default function AddEvent({ onSubmit, onClose }) {
               value={location}
               onChange={setLocation}
               placeholder={`e.g., ${ACTIVE_TEAM.homeScoreLabel} Field`}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition"
             />
           </div>
 
@@ -177,7 +177,7 @@ export default function AddEvent({ onSubmit, onClose }) {
                   value={opponent}
                   onChange={(e) => setOpponent(e.target.value)}
                   placeholder="Opponent name"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition"
                 />
               </div>
 
@@ -189,7 +189,7 @@ export default function AddEvent({ onSubmit, onClose }) {
                   id="home_away"
                   value={home_away}
                   onChange={(e) => setHome_away(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition"
                 >
                   <option value="home">Home</option>
                   <option value="away">Away</option>
@@ -210,7 +210,7 @@ export default function AddEvent({ onSubmit, onClose }) {
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Add any additional information..."
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition resize-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition resize-none"
             />
           </div>
 
@@ -226,7 +226,7 @@ export default function AddEvent({ onSubmit, onClose }) {
             <button
               type="submit"
               disabled={saving}
-              className="flex-1 px-4 py-2 bg-violet-600 text-white font-medium rounded-lg hover:bg-violet-700 transition"
+              className="flex-1 px-4 py-2 bg-brand-600 text-white font-medium rounded-lg hover:bg-brand-700 transition"
             >
               {saving ? 'Creating…' : 'Create Event'}
             </button>

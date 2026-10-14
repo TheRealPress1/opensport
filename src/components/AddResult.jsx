@@ -45,7 +45,7 @@ export default function AddResult({ event, members, existingGoals, onSubmit, onC
   }
 
   const opponentName = event.opponent || event.title || 'Opponent'
-  const inputClass = 'w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-transparent focus:ring-2 focus:ring-violet-500'
+  const inputClass = 'w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-transparent focus:ring-2 focus:ring-brand-500'
 
   return (
     <>
@@ -58,7 +58,7 @@ export default function AddResult({ event, members, existingGoals, onSubmit, onC
         >
           <div className="flex items-start justify-between p-6 border-b border-gray-100">
             <div>
-              <p className="text-xs font-semibold uppercase text-violet-500">{ACTIVE_TEAM.soccer ? 'Match report' : 'Result'}</p>
+              <p className="text-xs font-semibold uppercase text-brand-500">{ACTIVE_TEAM.soccer ? 'Match report' : 'Result'}</p>
               <h2 className="mt-1 text-2xl font-bold text-gray-900">Game Result</h2>
               <p className="text-sm text-gray-500">vs {opponentName}</p>
             </div>
@@ -84,7 +84,7 @@ export default function AddResult({ event, members, existingGoals, onSubmit, onC
                     min="0" max="9999"
                     aria-label="Team score" value={teamScore}
                     onChange={(e) => setTeamScore(e.target.value)}
-                    className={`${inputClass} text-center text-3xl font-bold text-violet-600`}
+                    className={`${inputClass} text-center text-3xl font-bold text-brand-600`}
                     required
                   />
                 </div>
@@ -109,7 +109,7 @@ export default function AddResult({ event, members, existingGoals, onSubmit, onC
                 <button
                   type="button"
                   onClick={handleAddGoal}
-                  className="text-sm font-semibold text-violet-600 hover:text-violet-700"
+                  className="text-sm font-semibold text-brand-600 hover:text-brand-700"
                 >
                   + Add Goal
                 </button>
@@ -178,7 +178,7 @@ export default function AddResult({ event, members, existingGoals, onSubmit, onC
               <button
                 type="submit"
                 disabled={saving}
-                className="flex-1 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-violet-700 disabled:opacity-60"
+                className="flex-1 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-700 disabled:opacity-60"
               >
                 {saving ? 'Saving...' : 'Save Result'}
               </button>

@@ -30,7 +30,7 @@ export default function EditProfile({ myInfo, onSave, onLogout, onClose }) {
         <label className="block text-sm font-medium">Position (optional){settings.soccer ? <select value={position} onChange={event => setPosition(event.target.value)} className={inputClass}><option value="">Unassigned</option>{POSITIONS.map(value => <option key={value}>{value}</option>)}</select> : <input value={position} onChange={event => setPosition(event.target.value)} maxLength={40} className={inputClass} />}</label>
         <label className="block text-sm font-medium">Phone (optional)<input type="tel" value={phone} onChange={event => setPhone(event.target.value)} className={inputClass} /><span className="block mt-1 text-xs text-slate-500">Visible only to you and team administrators.</span></label>
         <label className="block text-sm font-medium">Photo (optional)<input type="file" accept="image/jpeg,image/png,image/webp" onChange={event => setAvatarFile(event.target.files?.[0] || null)} className="mt-2 block w-full text-xs" /><span className="text-xs text-slate-500">JPEG, PNG, or WebP · up to 5 MB</span></label>
-        <button disabled={saving || !name.trim()} className="w-full rounded-lg bg-violet-600 text-white py-3 font-semibold disabled:opacity-50">{saving ? 'Saving…' : 'Save changes'}</button>
+        <button disabled={saving || !name.trim()} className="w-full rounded-lg bg-brand-600 text-white py-3 font-semibold disabled:opacity-50">{saving ? 'Saving…' : 'Save changes'}</button>
         <button type="button" className="w-full rounded-lg bg-red-50 text-red-700 py-3 font-semibold" onClick={async () => { try { await onLogout() } catch (cause) { setError(cause.message) } }}>Sign out</button>
       </form>
     </section>

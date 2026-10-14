@@ -92,7 +92,7 @@ export default function Schedule({
       {/* Upcoming Section */}
       <section>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold text-gray-900">Upcoming</h2>
+          <h2 className="font-display text-[34px] font-bold leading-none text-gray-900">Upcoming</h2>
           <div className="flex items-center bg-gray-100 rounded-lg p-0.5">
             <button
               onClick={() => setView('list')}
@@ -156,7 +156,7 @@ function PastEventsSection({ pastEvents, renderEventCards }) {
         aria-expanded={open} onClick={() => setOpen(o => !o)}
         className="flex items-center gap-2 mb-6 group"
       >
-        <h2 className="text-2xl font-semibold text-gray-900">Past Events</h2>
+        <h2 className="font-display text-[34px] font-bold leading-none text-gray-900">Past Events</h2>
         <svg
           className={`w-5 h-5 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`}
           fill="none"
