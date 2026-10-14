@@ -88,12 +88,14 @@
 .project-site .os-story { background: var(--green); color: var(--paper); }
 .project-site .os-story-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 11%; padding-block: 78px; }
 .project-site .os-story .os-eyebrow { color: var(--paper); margin-bottom: 20px; }
-.project-site .os-story-number { font-family: 'OpenSport Display', sans-serif; font-size: 105px; line-height: 1; margin-top: 37px; display: flex; align-items: center; gap: 21px; color: var(--peach); }
-.project-site .os-story-number>span { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 8px; line-height: 1.85; color: var(--paper); letter-spacing: 1px; }
+.project-site .os-story-moments { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 26px 28px; margin-top: 37px; }
+.project-site .os-story-number { font-family: 'OpenSport Display', sans-serif; font-size: 105px; line-height: 1; display: flex; align-items: center; gap: 21px; color: var(--peach); }
+.project-site .os-story-number>span { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 8px; line-height: 1.85; color: var(--paper); letter-spacing: 1px; white-space: nowrap; }
 .project-site .os-story-heading { position: relative; isolation: isolate; }
-.project-site .os-story-field { position: absolute; right: -5px; bottom: 2px; width: 190px; height: 128px; border: 1px solid #f7f5ed3d; border-radius: 1px; z-index: -1; transform: rotate(-12deg); }
-.project-site .os-story-field:before { content: ''; position: absolute; top: 0; left: 50%; height: 100%; border-left: 1px solid #f7f5ed3d; }.project-site .os-story-field:after { content: ''; position: absolute; top: calc(50% - 24px); left: calc(50% - 24px); width: 48px; height: 48px; border-radius: 50%; border: 1px solid #f7f5ed3d; }
-.project-site .os-story-copy { padding-top: 32px; }
+.project-site .os-story-photo { width: min(250px, 44%); flex-shrink: 0; margin: 0; padding: 9px 9px 0; background: #fbfaf5; box-shadow: 0 22px 44px #082a1959, 0 3px 8px #082a1933; transform: rotate(-3deg); }
+.project-site .os-story-photo img { display: block; width: 100%; height: auto; }
+.project-site .os-story-photo figcaption { padding: 10px 2px 11px; color: var(--ink); font-size: 8px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase; }
+.project-site .os-story-copy { align-self: center; }
 .project-site .os-story-copy>p { color: var(--paper); line-height: 1.9; font-size: 14px; margin-bottom: 19px; }
 .project-site .os-story-copy>.os-story-lead { color: var(--paper); font-size: 20px; line-height: 1.65; letter-spacing: -.3px; }
 .project-site .os-story-copy>.os-story-signature { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 650; margin-top: 28px; margin-bottom: 0; color: var(--paper); }
@@ -127,7 +129,6 @@
   .project-site .os-compare-table th, .project-site .os-compare-table td { padding-inline: 18px; }
   .project-site .os-athlete-poster { --stage-height: 31vw; }
   .project-site .os-story-layout { gap: 7%; }
-  .project-site .os-story-field { right: -12px; width: 145px; height: 100px; }
   .project-site .os-features { gap: 25px; }
   .project-site .os-feature h3 { font-size: 18px; }
   .project-site .os-footer-main { flex-wrap: wrap; }
@@ -180,8 +181,8 @@
   .project-site .os-compare-table thead th>span { font-size: 9px; margin-top: 7px; }
   .project-site .os-compare-table tbody th { grid-column: 1 / -1; padding: 16px 12px 8px; border-bottom: 0; font-size: 8px; line-height: 1.6; letter-spacing: 1.1px; background: linear-gradient(90deg, transparent 50%, var(--green-tint) 50%); }
   .project-site .os-story-layout { grid-template-columns: 1fr; padding-block: 50px; gap: 22px; }
-  .project-site .os-story-number { margin-top: 25px; font-size: 81px; }
-  .project-site .os-story-field { right: 7px; width: 153px; height: 103px; bottom: 0; }
+  .project-site .os-story-moments { margin-top: 25px; gap: 18px 12px; }.project-site .os-story-number { font-size: 72px; gap: 14px; }.project-site .os-story-number>span { font-size: 7px; }
+  .project-site .os-story-photo { width: 40%; margin-right: 2%; }.project-site .os-story-photo figcaption { font-size: 7px; letter-spacing: .8px; white-space: nowrap; }
   .project-site .os-story-copy { padding-top: 0; }.project-site .os-story-copy>.os-story-lead { font-size: 18px; }.project-site .os-story-copy>p { font-size: 12px; line-height: 1.9; }
   .project-site .os-story-copy>.os-story-signature { font-size: 10px; }
   .project-site .os-hosting-options { grid-template-columns: 1fr; margin-top: 28px; gap: 16px; }.project-site .os-hosting-options article { padding: 24px; }.project-site .os-hosting-options h3 { font-size: 23px; margin-top: 24px; }.project-site .os-hosting-options article>p { font-size: 12px; }.project-site .os-preview-note { font-size: 11px; }
@@ -192,5 +193,6 @@
   .project-site .os-hero-actions { flex-direction: column; align-items: stretch; }
   .project-site .os-download-action>.os-button { width: 100%; }
   .project-site .os-athlete-poster { margin-top: 25px; }
+  .project-site .os-story-photo { width: 55%; }
 }
 @media (prefers-reduced-motion: reduce) { .project-site .os-button { transition: none; } }
