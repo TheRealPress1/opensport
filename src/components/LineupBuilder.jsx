@@ -145,15 +145,15 @@ export default function LineupBuilder({
                 />
               ) : (
                 <>
-                  <h2 className="text-xl font-bold text-gray-900">{isTemplate ? (name || 'Untitled Lineup') : 'Lineup'}</h2>
+                  <h2 className="font-display text-[30px] font-bold leading-none text-gray-900">{isTemplate ? (name || 'Untitled Lineup') : 'Lineup'}</h2>
                   {eventTitle && <p className="text-sm text-gray-500 mt-0.5">{eventTitle}</p>}
                 </>
               )}
-              <p className="mt-1 text-sm font-semibold text-violet-700">{formation}</p>
+              <p className="mt-1 text-sm font-semibold text-brand-700">{formation}</p>
             </div>
             <div className="flex items-center gap-3">
               {lineup?.status === 'published' && (
-                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-green-100 text-green-700">
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-brand-100 text-brand-700">
                   Published
                 </span>
               )}
@@ -184,7 +184,7 @@ export default function LineupBuilder({
                         onClick={() => handleFormationChange(f)}
                         className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-colors ${
                           formation === f
-                            ? 'bg-violet-600 text-white'
+                            ? 'bg-brand-600 text-white'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                       >
@@ -214,9 +214,9 @@ export default function LineupBuilder({
                         draggable
                         onDragStart={() => handleDragStart(m.id)}
                         onDragEnd={() => setDraggedMember(null)}
-                        className="flex items-center gap-2 px-2.5 py-2 rounded-lg bg-gray-50 hover:bg-violet-50 cursor-grab active:cursor-grabbing transition-colors border border-transparent hover:border-violet-200"
+                        className="flex items-center gap-2 px-2.5 py-2 rounded-lg bg-gray-50 hover:bg-brand-50 cursor-grab active:cursor-grabbing transition-colors border border-transparent hover:border-brand-200"
                       >
-                        <div className="w-7 h-7 rounded-full bg-violet-100 flex items-center justify-center text-xs font-bold text-violet-700 flex-shrink-0">
+                        <div className="w-7 h-7 rounded-full bg-brand-100 flex items-center justify-center text-xs font-bold text-brand-700 flex-shrink-0">
                           {m.jersey_number || m.name.charAt(0)}
                         </div>
                         <div className="min-w-0">
@@ -263,7 +263,7 @@ export default function LineupBuilder({
                       onClick={() => handleFormationChange(f)}
                       className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-colors whitespace-nowrap ${
                         formation === f
-                          ? 'bg-violet-600 text-white'
+                          ? 'bg-brand-600 text-white'
                           : 'bg-gray-100 text-gray-700'
                       }`}
                     >
@@ -281,7 +281,7 @@ export default function LineupBuilder({
                 className="relative w-full rounded-xl overflow-hidden"
                 style={{
                   aspectRatio: '3 / 4',
-                  background: 'linear-gradient(to bottom, #2d8a4e, #34a853, #2d8a4e)',
+                  background: 'linear-gradient(to bottom, #1c7040, #258a50, #1c7040)',
                 }}
               >
                 {/* Field markings */}
@@ -332,7 +332,7 @@ export default function LineupBuilder({
                           className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold shadow-md border-2 transition-all ${
                             isEmpty
                               ? isActive ? 'bg-white/40 border-white text-white ring-2 ring-white' : 'bg-white/20 border-white/40 text-white/60'
-                              : 'bg-red-600 border-white text-white cursor-pointer'
+                              : 'bg-accent border-white text-white cursor-pointer'
                           } ${!readOnly && isEmpty ? 'hover:bg-white/30' : ''}`}
                           onClick={!readOnly ? () => handleSlotTap(i) : undefined}
                         >
@@ -374,9 +374,9 @@ export default function LineupBuilder({
                     key={m.id}
                     type="button"
                     onClick={() => handleMobileAssign(m.id)}
-                    className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-gray-50 hover:bg-violet-50 transition-colors text-left"
+                    className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-gray-50 hover:bg-brand-50 transition-colors text-left"
                   >
-                    <div className="w-6 h-6 rounded-full bg-violet-100 flex items-center justify-center text-[10px] font-bold text-violet-700 flex-shrink-0">
+                    <div className="w-6 h-6 rounded-full bg-brand-100 flex items-center justify-center text-[10px] font-bold text-brand-700 flex-shrink-0">
                       {m.jersey_number || m.name.charAt(0)}
                     </div>
                     <span className="text-xs font-medium text-gray-900 truncate">{m.name}</span>
@@ -416,7 +416,7 @@ export default function LineupBuilder({
                 <button
                   onClick={() => handleSave('published')}
                   disabled={saving}
-                  className="px-4 py-2 text-sm font-medium rounded-lg bg-violet-600 text-white hover:bg-violet-700 transition-colors disabled:opacity-50"
+                  className="px-4 py-2 text-sm font-medium rounded-lg bg-brand-600 text-white hover:bg-brand-700 transition-colors disabled:opacity-50"
                 >
                   {saving ? 'Publishing...' : 'Publish Lineup'}
                 </button>

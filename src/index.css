@@ -1,6 +1,54 @@
 @import "tailwindcss";
 
-:root { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-synthesis: none; }
+@font-face { font-family: 'OpenSport Display'; src: url('/fonts/BarlowCondensed-Bold.ttf') format('truetype'); font-style: normal; font-weight: 700; font-display: swap; }
+@font-face { font-family: 'OpenSport Display'; src: url('/fonts/BarlowCondensed-ExtraBold.ttf') format('truetype'); font-style: normal; font-weight: 800; font-display: swap; }
+
+@theme {
+  --font-display: 'OpenSport Display', Impact, 'Arial Narrow', sans-serif;
+  --color-accent: #b94b2e;
+  /* OpenSport pitch green, the product's primary color (500-700 carry white text). */
+  --color-brand-50: #eef6ef;
+  --color-brand-100: #dcebdd;
+  --color-brand-200: #b9d8be;
+  --color-brand-300: #8dbf98;
+  --color-brand-400: #4f9b67;
+  --color-brand-500: #2a8650;
+  --color-brand-600: #1f7a45;
+  --color-brand-700: #17633a;
+  --color-brand-800: #134e2f;
+  --color-brand-900: #0f3d26;
+  --color-brand-950: #08251a;
+  /* Warm neutrals so app surfaces match the cream public site; contrast tracks Tailwind's defaults. */
+  --color-gray-50: #f8f7f1;
+  --color-gray-100: #f0eee6;
+  --color-gray-200: #e4e2d7;
+  --color-gray-300: #d2d0c4;
+  --color-gray-400: #9a9c8f;
+  --color-gray-500: #6b7266;
+  --color-gray-600: #4f5c53;
+  --color-gray-700: #3d4d43;
+  --color-gray-800: #2a3d33;
+  --color-gray-900: #19392e;
+  --color-gray-950: #0f241c;
+  --color-slate-50: #f8f7f1;
+  --color-slate-100: #f0eee6;
+  --color-slate-200: #e4e2d7;
+  --color-slate-300: #d2d0c4;
+  --color-slate-400: #9a9c8f;
+  --color-slate-500: #6b7266;
+  --color-slate-600: #4f5c53;
+  --color-slate-700: #3d4d43;
+  --color-slate-800: #2a3d33;
+  --color-slate-900: #19392e;
+  --color-slate-950: #0f241c;
+}
+
+@layer base {
+  /* Tailwind v4 draws bare `border` utilities in currentColor; keep borders soft. */
+  *, ::before, ::after, ::backdrop, ::file-selector-button { border-color: var(--color-gray-200, currentColor); }
+}
+
+:root { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-synthesis: none; color: var(--color-gray-900); }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }

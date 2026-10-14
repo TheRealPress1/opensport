@@ -20,13 +20,13 @@ export default function LiveTeamApp() {
   if (team.loading) return <Status title="Loading your team…" />
   if (!team.session) return <AuthScreen onLogin={team.login} />
   if (team.schemaRequired) return <Status title="Schema upgrade required" detail="This instance uses the earlier team schema. Keep the existing live deployment running and prepare a reviewed migration with a backup. Do not apply the fresh-install schema to this database."><p role="alert" className="mt-3 text-red-700">{team.error}</p></Status>
-  if (team.error && !team.myInfo) return <Status title="Your team could not load" detail={team.error}><button className="mt-4 underline text-violet-700" onClick={team.reload}>Try again</button></Status>
-  if (!team.hasProfile) return <Status title={team.myInfo?.active === false ? 'Team access is inactive' : 'An invitation is needed'} detail="Ask your organizer for a current invitation or help restoring your membership."><button className="underline text-violet-700 mt-4" onClick={team.logout}>Sign out</button>{team.error && <p role="alert" className="text-red-700 mt-3">{team.error}</p>}</Status>
+  if (team.error && !team.myInfo) return <Status title="Your team could not load" detail={team.error}><button className="mt-4 underline text-brand-700" onClick={team.reload}>Try again</button></Status>
+  if (!team.hasProfile) return <Status title={team.myInfo?.active === false ? 'Team access is inactive' : 'An invitation is needed'} detail="Ask your organizer for a current invitation or help restoring your membership."><button className="underline text-brand-700 mt-4" onClick={team.logout}>Sign out</button>{team.error && <p role="alert" className="text-red-700 mt-3">{team.error}</p>}</Status>
   return <TeamWorkspace team={team} />
 }
 
 function Status({ title, detail, children }) {
-  return <main className="min-h-screen flex items-center justify-center bg-slate-50 p-6"><div className="max-w-md rounded-xl border bg-white p-7"><p className="text-violet-700 font-bold">{APP_BRAND.name}</p><h1 className="text-2xl font-bold my-3">{title}</h1>{detail && <p className="text-slate-600">{detail}</p>}{children}</div></main>
+  return <main className="min-h-screen flex items-center justify-center bg-slate-50 p-6"><div className="max-w-md rounded-xl border bg-white p-7"><p className="text-brand-700 font-bold">{APP_BRAND.name}</p><h1 className="text-2xl font-bold my-3">{title}</h1>{detail && <p className="text-slate-600">{detail}</p>}{children}</div></main>
 }
 
 function AccessCallback({ callback, onComplete }) {
@@ -65,11 +65,11 @@ function AccessCallback({ callback, onComplete }) {
   }
   return <Status title={callback.mode === 'invite' ? 'Join your team' : 'Choose a new password'} detail="Your link is private. Do not share it with anyone.">
     {error && <p role="alert" className="my-4 text-red-700">{error}</p>}
-    {!verified && <button disabled={saving} onClick={verify} className="w-full rounded-lg bg-violet-600 text-white font-semibold py-3 mt-5 disabled:opacity-50">{saving ? 'Checking link…' : 'Continue with this link'}</button>}
+    {!verified && <button disabled={saving} onClick={verify} className="w-full rounded-lg bg-brand-600 text-white font-semibold py-3 mt-5 disabled:opacity-50">{saving ? 'Checking link…' : 'Continue with this link'}</button>}
     {verified && <form className="space-y-4 mt-5" onSubmit={submit}>
       {callback.mode === 'invite' && <label className="block text-sm font-medium">Your name<input required value={name} onChange={event => setName(event.target.value)} className="w-full mt-1 border rounded-lg px-3 py-2" maxLength={100} /></label>}
       <label className="block text-sm font-medium">New password<input aria-label="New password" type="password" autoComplete="new-password" minLength={12} required value={password} onChange={event => setPassword(event.target.value)} className="w-full mt-1 border rounded-lg px-3 py-2" /><span className="text-xs text-slate-500">At least 12 characters</span></label>
-      <button disabled={saving || (callback.mode === 'invite' && !name.trim())} className="w-full rounded-lg bg-violet-600 text-white py-3 font-semibold disabled:opacity-50">{saving ? 'Saving…' : callback.mode === 'invite' ? 'Join team' : 'Save password'}</button>
+      <button disabled={saving || (callback.mode === 'invite' && !name.trim())} className="w-full rounded-lg bg-brand-600 text-white py-3 font-semibold disabled:opacity-50">{saving ? 'Saving…' : callback.mode === 'invite' ? 'Join team' : 'Save password'}</button>
     </form>}
     {!verified && error && <a href="/" className="inline-block mt-4 underline">Back to sign in</a>}
   </Status>
