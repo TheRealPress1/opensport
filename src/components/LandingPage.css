@@ -30,13 +30,19 @@
 .project-site .os-hero-alternative strong { font-weight: 800; padding-inline: 3px; background: linear-gradient(transparent 58%, #f7c9ae 58%); }
 .project-site .os-hero-description { margin: 12px auto 0; text-align: center; max-width: 560px; font-size: 14px; line-height: 1.7; color: var(--muted); }
 .project-site .os-hero-actions { display: flex; justify-content: center; align-items: start; gap: 12px; margin-top: 19px; position: relative; z-index: 2; }
-.project-site .os-button { display: inline-flex; justify-content: center; align-items: center; gap: 24px; min-height: 47px; padding: 12px 21px; border: 1px solid transparent; border-radius: 3px; font-size: 12px; font-weight: 650; transition: background .15s; }
+.project-site .os-button { display: inline-flex; justify-content: center; align-items: center; gap: 24px; min-height: 47px; padding: 12px 21px; border: 1px solid transparent; border-radius: 3px; font-size: 12px; font-weight: 650; transition: background .2s, transform .2s, box-shadow .2s; }
+.project-site .os-button:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -14px #13291c99; }.project-site .os-button:active { transform: translateY(0); box-shadow: none; }
+@keyframes os-arrow-fly { 0% { transform: translate(0, 0); } 45% { transform: translate(20px, -20px); } 46% { transform: translate(-20px, 20px); } 100% { transform: translate(0, 0); } }
+@keyframes os-arrow-hint { 0%, 80%, 100% { transform: translate(0, 0); } 88% { transform: translate(4px, -4px); } 94% { transform: translate(0, 0); } }
+@keyframes os-download-drop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(5px); } 70% { transform: translateY(-1px); } }
+@keyframes os-download-hint { 0%, 80%, 100% { transform: translateY(0); } 88% { transform: translateY(4px); } 94% { transform: translateY(0); } }
+.project-site .os-hero-actions .os-arrow path { animation: os-arrow-hint 4s ease-in-out 1.5s infinite; }.project-site .os-hero-actions .os-download-arrow { animation: os-download-hint 4s ease-in-out 3.5s infinite; }
+.project-site a:hover .os-arrow path, .project-site a:focus-visible .os-arrow path { animation: os-arrow-fly .6s cubic-bezier(.4, 0, .2, 1); }
+.project-site a:hover .os-download-arrow, .project-site a:focus-visible .os-download-arrow { animation: os-download-drop .6s ease-in-out; }
 .project-site .os-button-primary { background: var(--green); color: var(--paper); }
 .project-site .os-button-primary:hover { background: var(--green-dark); }
 .project-site .os-button-secondary { border-color: #19392e4a; }
 .project-site .os-button-secondary:hover { background: #eae9de; }
-.project-site .os-download-action { display: flex; flex-direction: column; align-items: center; gap: 7px; }
-.project-site .os-download-action>span { font-size: 9px; color: var(--muted); }
 .project-site .os-athlete-poster { --stage-height: clamp(270px, 29vw, 407px); position: relative; margin-top: 12px; isolation: isolate; }
 .project-site .os-height-lines { position: absolute; top: 0; right: 0; left: 0; height: var(--stage-height); display: flex; flex-direction: column; justify-content: space-between; padding-block: 18px 0; z-index: -2; }
 .project-site .os-height-lines>span { height: 1px; background: #19392e12; position: relative; }
@@ -96,7 +102,8 @@
 .project-site .os-slideshow-controls { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; }
 .project-site .os-slideshow-count { font-size: 10px; font-weight: 700; letter-spacing: 1.6px; }
 .project-site .os-slideshow-controls>div { display: flex; gap: 8px; }
-.project-site .os-slideshow-controls button { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid #f7f5ed66; border-radius: 50%; color: var(--paper); background: transparent; cursor: pointer; transition: background .15s; }
+.project-site .os-slideshow-controls button { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid #f7f5ed66; border-radius: 50%; color: var(--paper); background: transparent; cursor: pointer; transition: background .15s, transform .15s; }
+.project-site .os-slideshow-controls button svg { transition: transform .2s; }.project-site .os-slideshow-controls button:first-child:hover svg { transform: translateX(-3px); }.project-site .os-slideshow-controls button:last-child:hover svg { transform: translateX(3px); }.project-site .os-slideshow-controls button:active { transform: scale(.92); }
 .project-site .os-slideshow-controls button:hover { background: #f7f5ed1f; }.project-site .os-slideshow-controls button:focus-visible { outline: 3px solid var(--peach); outline-offset: 3px; }
 .project-site .os-story-signature { display: block; width: min(240px, 62%); height: auto; margin-top: 30px; }
 .project-site .os-story-copy { align-self: center; }
@@ -153,7 +160,6 @@
   .project-site .os-hero-actions { gap: 8px; margin-top: 20px; }
   .project-site .os-button { font-size: 12px; padding: 12px; gap: 12px; min-height: 45px; }
   .project-site .os-button svg { width: 16px; height: 16px; }
-  .project-site .os-download-action>span { font-size: 10px; }
   .project-site .os-athlete-poster { --stage-height: 37vw; margin-top: 34px; }
   .project-site .os-athlete-lineup { width: 95%; }
   .project-site .os-poster-word { font-size: 14vw; bottom: 52px; }
@@ -190,7 +196,6 @@
 }
 @media (max-width: 360px) {
   .project-site .os-hero-actions { flex-direction: column; align-items: stretch; }
-  .project-site .os-download-action>.os-button { width: 100%; }
   .project-site .os-athlete-poster { margin-top: 25px; }
 }
-@media (prefers-reduced-motion: reduce) { .project-site .os-button { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .project-site .os-button, .project-site .os-slideshow-controls button, .project-site .os-slideshow-controls button svg { transition: none; transform: none !important; } .project-site .os-arrow path, .project-site .os-download-arrow { animation: none !important; } }
