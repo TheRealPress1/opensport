@@ -178,8 +178,9 @@ function Chevron({ direction }) {
 function Feature({ number, title, description, detail }) {
   return <article className="os-feature"><span className="os-feature-number">{number}</span><p className="os-eyebrow">{detail}</p><h3>{title}</h3><p>{description}</p></article>
 }
+// OpenSport ball: a soccer panel and a basketball half joined by a stitched baseball seam.
 function SportMark() {
-  return <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M6 24 16 6h10L16 24H6Z" fill="currentColor" /><path d="m21 26 8-14v14h-8Z" fill="currentColor" opacity=".5" /></svg>
+  return <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="29" fill="#1f7a45" /><path d="M43.8,5.51C20,18 46,44 22.08,59.25A29 29 0 0 0 43.8,5.51Z" fill="#c9562f" /><path d="M38.5 35C46 31 53 30 60.6 30.6M57.11,17.5C48.5 27 47 42 50.64,54.22" fill="none" stroke="#19392e" strokeWidth="2.6" strokeLinecap="round" /><path d="M18 21.2L25.42 26.59L22.58 35.31L13.42 35.31L10.58 26.59Z" fill="#f7f5ed" /><path d="M43.8,5.51C20,18 46,44 22.08,59.25" fill="none" stroke="#f7f5ed" strokeWidth="2.8" /><path d="M35.66 9.87L31.34 9.68M38.24 11.76L39.73 15.82M31.89 17.68L27.9 19.36M35.03 18.28L38.11 21.31M31.16 26.15L27.63 28.65M34.36 26.06L38.03 28.35M31.55 34.67L28.02 37.17M34.75 34.59L38.41 36.88M31.29 42.84L27.32 44.56M34.44 43.41L37.55 46.42M28.78 50.41L24.45 50.45M31.45 52.17L33.15 56.15" fill="none" stroke="#f7f5ed" strokeWidth="1.6" strokeLinecap="round" /><circle cx="32" cy="32" r="29" fill="none" stroke="#19392e" strokeWidth="3" /></svg>
 }
 function Arrow() {
   return <svg className="os-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" /></svg>
