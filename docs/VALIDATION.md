@@ -307,3 +307,35 @@ contrast.
 - 1440, 768, 390, and 320 pixel layouts had no horizontal overflow or runtime
   errors. On small screens the comparison stacks each topic above its two
   answers while keeping table semantics.
+
+## One-click cloud deploy — 2026-10-14
+
+A Deploy button gives a team its own OpenSport on free Vercel and Supabase
+accounts. Validated locally against a disposable Supabase stack (CLI 2.111,
+Postgres 17.6.1.156, new-style publishable and secret keys). No Vercel project,
+Supabase project, or GitHub repository was created.
+
+- `scripts/cloud-migrate.mjs` applied all four migrations as the `postgres` role,
+  including the trigger on `auth.users`, the avatars bucket, and the Realtime
+  publication. A second run skipped them; preview and local builds skipped
+  migrations; a connection error that waiting can't fix failed immediately.
+- `vercel build` (CLI 64.0.2) used `vercel.json`'s install and build commands,
+  packaged `api/setup` and `api/team-admin` as Node.js 24 functions with their
+  shared modules, and kept the secret key, database password, and setup code out
+  of the static files. The packaged setup function answered correctly.
+- A local stand-in for Vercel served the cloud build and called the functions
+  with Web Requests. A browser run covered the setup screen on a fresh install,
+  a refused wrong code, team creation and sign-in, the sign-up reminder, sign-in
+  for returning visitors, owner recovery with the setup code, and a phone layout.
+- All six existing live browser workflows, including the reconnect checks,
+  passed against that cloud install.
+- The eleventh setup-code attempt within an hour was refused, even with the
+  right code. Foreign origins and signed-out admin requests were refused.
+- 17 unit tests, eight Edge Function tests, the database security assertions
+  (now covering setup attempts), 12 public and cloud browser checks, eight Mac
+  setup-screen checks, ESLint, and the production build passed.
+
+Remaining gate: one real Deploy-button run on Vercel with the Supabase
+Marketplace integration, covering provisioning timing, Supabase's pooled
+connection strings, and the live sign-up setting. It needs the code on `main` and
+an account owner to accept Supabase's terms.
