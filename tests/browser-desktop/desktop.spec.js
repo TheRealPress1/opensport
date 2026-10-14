@@ -39,7 +39,7 @@ test('setup failure retains fields; retry creates the local team without persist
   await installBridge(page, { failFirstSetup: true })
   await page.goto('/')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Host on this Mac')
-  await expect(page.getByText('Use fictional team data. Other software or accounts on this Mac may be able to access its local database.', { exact: false })).toBeVisible()
+  await expect(page.getByText('Use fictional team data while release checks are completed.', { exact: false })).toBeVisible()
   await page.screenshot({ path: '.context/desktop-setup-welcome.png', fullPage: true })
   await page.getByRole('button', { name: 'Set up on this Mac' }).click()
   await page.getByLabel('Team name').fill('Riverside Sports Club')
