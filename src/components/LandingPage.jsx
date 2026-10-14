@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { CLOUD_GUIDE_URL, DOWNLOAD_URL, RELEASE_VERSION, REPOSITORY_URL, SETUP_URL, START_URL } from '../lib/project'
-import { athletes, photoCreditsUrl } from '../lib/athletes'
+import { athletes } from '../lib/athletes'
 import licenseUrl from '../../LICENSE?url&no-inline'
 import contributionUrl from '../../CONTRIBUTING.md?url&no-inline'
 import './LandingPage.css'
@@ -68,7 +68,7 @@ export default function LandingPage() {
         </section>
         <Ticker />
         <section className="os-compare" id="compare" aria-labelledby="compare-heading"><div className="os-container">
-          <div className="os-section-heading"><div><p className="os-eyebrow">02 / OPENSPORT VS. TEAMSNAP</p><h2 id="compare-heading">TeamSnap is huge.<br /><span>OpenSport is yours.</span></h2></div><p className="os-section-aside">TeamSnap is a big business, with 30 million users by its own count. OpenSport keeps the everyday essentials and makes them free, open source, and yours to run.</p></div>
+          <div className="os-section-heading"><div><p className="os-eyebrow">02 / OPENSPORT VS. TEAMSNAP</p><h2 id="compare-heading">TeamSnap is huge.<br /><span>OpenSport is yours.</span></h2></div></div>
           {/* Explicit roles keep table semantics when small screens restyle the rows as grids. */}
           <table className="os-compare-table" role="table">
             <caption className="sr-only">How OpenSport compares with TeamSnap</caption>
@@ -95,8 +95,7 @@ export default function LandingPage() {
         <section className="os-contribute os-container" aria-labelledby="contribute-heading"><div><p className="os-eyebrow">GOOD THINGS ARE BUILT TOGETHER.</p><h2 id="contribute-heading">The next move is ours.</h2><p>Try it. Break it. Make it better.<br />There’s room for you on this team.</p></div><a className="os-button os-button-primary" href={REPOSITORY_URL} target="_blank" rel="noreferrer"><GitHubIcon /> Explore on GitHub <Arrow /></a><span className="os-contribute-star" aria-hidden="true">✳</span></section>
       </main>
       <footer className="os-footer os-container">
-        <div className="os-footer-main"><a className="os-wordmark" href="#" aria-label="OpenSport home"><SportMark />OpenSport<span className="os-wordmark-period">.</span></a><p>For the love of the game.<br /><span>Independent project. Not affiliated with or endorsed by TeamSnap.</span></p><div className="os-footer-links"><a href={contributionUrl}>Contribution guide</a><a href={licenseUrl}>MIT code license</a><a href={SETUP_URL}>Setup guide</a><a href={DOWNLOAD_URL} download>Source · v{RELEASE_VERSION}</a></div></div>
-        <details className="os-photo-credits"><summary>Photo credits <span aria-hidden="true">+</span></summary><p>Athletes are shown as sporting inspirations. No affiliation or endorsement is implied. Photography retains its own licenses, separate from the MIT-licensed code.</p><ul>{athletes.map(athlete => <li key={athlete.id}><strong>{athlete.name}</strong><span>Photo by {athlete.photographer}. <a href={athlete.sourceUrl} target="_blank" rel="noreferrer">Original photograph</a> · <a href={athlete.licenseUrl} target="_blank" rel="noreferrer">{athlete.license}</a>. Background removed for this collage; see <a href={photoCreditsUrl}>asset credits</a> for modifications and height references.</span></li>)}</ul></details>
+        <div className="os-footer-main"><a className="os-wordmark" href="#" aria-label="OpenSport home"><SportMark />OpenSport<span className="os-wordmark-period">.</span></a><p>For the love of the game.</p><div className="os-footer-links"><a href={contributionUrl}>Contribution guide</a><a href={licenseUrl}>MIT code license</a><a href={SETUP_URL}>Setup guide</a><a href={DOWNLOAD_URL} download>Source · v{RELEASE_VERSION}</a><a href="/#/credits">Credits</a></div></div>
       </footer>
     </div>
   )
