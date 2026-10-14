@@ -45,7 +45,7 @@ export default function LandingPage() {
           <p className="os-hero-description">Schedules, rosters, and RSVPs in one place. No ads, no subscription,<br className="os-desktop-break" /> and your team’s data stays on a host you control.</p>
           <div className="os-hero-actions">
             <a className="os-button os-button-primary" href="/#/demo">Try the demo <Arrow /></a>
-            <div className="os-download-action"><a className="os-button os-button-secondary" href={DOWNLOAD_URL} download>Download source <DownloadIcon /></a><span>Source code · setup required</span></div>
+            <a className="os-button os-button-secondary" href={DOWNLOAD_URL} download>Download <DownloadIcon /></a>
           </div>
           <figure className="os-athlete-poster" aria-label="Athletes from soccer, basketball, baseball, and American football, arranged from shortest to tallest">
             <div className="os-height-lines" aria-hidden="true">{[0, 1, 2, 3, 4].map(line => <span key={line} />)}</div>
@@ -138,10 +138,10 @@ function SportMark() {
   return <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M6 24 16 6h10L16 24H6Z" fill="currentColor" /><path d="m21 26 8-14v14h-8Z" fill="currentColor" opacity=".5" /></svg>
 }
 function Arrow() {
-  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" /></svg>
+  return <svg className="os-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" /></svg>
 }
 function DownloadIcon() {
-  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5" /></svg>
+  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path className="os-download-arrow" d="M12 3v12m-5-5 5 5 5-5" /><path d="M5 16v5h14v-5" /></svg>
 }
 function ComputerIcon() {
   return <svg width="31" height="31" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="4" y="5" width="24" height="18" rx="2" /><path d="M4 19h24M16 23v5m-6 0h12" /></svg>

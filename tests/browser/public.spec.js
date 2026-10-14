@@ -48,8 +48,7 @@ test('public site and source download work without a team account', async ({ pag
   await expect(page.getByRole('img', { name: 'Gaspard Seuge' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'View OpenSport on GitHub' })).toHaveAttribute('href', 'https://github.com/TheRealPress1/opensport')
   await expect(page.getByRole('link', { name: 'Try the demo', exact: true }).first()).toHaveAttribute('href', '/#/demo')
-  await expect(page.getByRole('link', { name: 'Download source', exact: true }).first()).toHaveAttribute('href', '/downloads/opensport-0.1.0-source.zip')
-  await expect(page.getByText('Source code · setup required', { exact: true }).first()).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Download', exact: true }).first()).toHaveAttribute('href', '/downloads/opensport-0.1.0-source.zip')
   await expect(athleteImages(page)).toHaveCount(athleteNames.length)
   for (const image of await athleteImages(page).all()) {
     await expect(image).toBeVisible()
@@ -151,7 +150,7 @@ test('landing stays usable by keyboard and on narrow screens when photographs fa
     await page.setViewportSize({ width, height: 900 })
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(headline)
     await expect(demo).toBeVisible()
-    for (const action of [demo, page.getByRole('link', { name: 'Download source', exact: true }).first()]) {
+    for (const action of [demo, page.getByRole('link', { name: 'Download', exact: true }).first()]) {
       const box = await action.boundingBox()
       expect(box.width).toBeGreaterThanOrEqual(44)
       expect(box.height).toBeGreaterThanOrEqual(44)
