@@ -26,6 +26,8 @@ cp .env.example .env.local
 npm run dev
 ```
 
+The project site also plays a 25-second walkthrough of the demo. After changing the team interface, regenerate it while the site runs locally with `node scripts/record-demo-video.mjs http://127.0.0.1:5173` (requires ffmpeg with libx264 and libvpx-vp9).
+
 The example selects `VITE_APP_MODE=project`. Team mode is an explicit installation choice. A team installation directs visitors to its own sign-in and team workspace, not the project marketing page.
 
 ## Host your team

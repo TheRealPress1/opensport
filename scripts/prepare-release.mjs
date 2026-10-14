@@ -8,7 +8,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const { version } = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'))
 const roots = ['src', 'public', 'supabase', 'deploy', 'desktop', 'scripts', 'tests', '.github', 'docs']
 const files = ['package.json', 'package-lock.json', 'index.html', 'vite.config.js', 'eslint.config.js', 'playwright.config.js', '.gitignore', '.dockerignore', '.env.example', '.nvmrc', 'Dockerfile', 'README.md', 'LICENSE', 'CONTRIBUTING.md', 'CHANGELOG.md']
-const omit = new Set(['node_modules', '.git', '.context', '.opensport', 'downloads', 'dist', 'out', 'resources', 'test-results', 'playwright-report'])
+const omit = new Set(['node_modules', '.git', '.context', '.opensport', 'downloads', 'dist', 'out', 'resources', 'test-results', 'playwright-report', 'videos'])
 async function walk(relative) {
   for (const entry of await readdir(path.join(root, relative), { withFileTypes: true })) {
     if (omit.has(entry.name) || (entry.name.startsWith('.env') && entry.name !== '.env.example')) continue

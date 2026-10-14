@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { DOWNLOAD_URL, RELEASE_VERSION, REPOSITORY_URL, SETUP_URL } from '../lib/project'
 import { athletes, photoCreditsUrl } from '../lib/athletes'
 import licenseUrl from '../../LICENSE?url&no-inline'
@@ -61,7 +61,7 @@ export default function LandingPage() {
           <div className="os-section-heading"><div><p className="os-eyebrow">01 / THE EVERYDAY ESSENTIALS</p><h2 id="product-heading">Less chasing.<br />More playing.</h2></div><div className="os-section-aside"><p>The group chat can only do so much. Give your team one place to find the plan, say they’re in, and get ready for game day.</p><a className="os-text-link" href="/#/demo">Meet your demo team <Arrow /></a></div></div>
           <figure className="os-product-preview">
             <div className="os-browser-bar" aria-hidden="true"><span className="os-browser-dots"><i /><i /><i /></span><span>YOUR TEAM’S HOME</span><span>OPENSPORT ↗</span></div>
-            <a href="/#/demo" aria-label="Explore the Union Sports Club demo"><img src="/images/demo-workspace.png" width="1280" height="940" alt="The OpenSport demo showing Union Sports Club’s schedule, upcoming matches, and RSVP buttons." loading="lazy" decoding="async" /></a>
+            <ProductVideo />
             <figcaption><span><span className="os-demo-dot" /> FICTIONAL TEAM. REAL OPENSPORT.</span><span>No account needed. Changes reset on refresh.</span></figcaption>
           </figure>
           <div className="os-features">
@@ -109,6 +109,43 @@ function AthletePortrait({ athlete }) {
   // Match the poster's responsive height so small screens fetch smaller cutouts.
   const sizes = `(max-width: 650px) ${37 * widthScale}vw, (max-width: 1050px) ${31 * widthScale}vw, (max-width: 1403px) ${29 * widthScale}vw, ${407 * widthScale}px`
   return <img data-athlete={athlete.id} className={`os-athlete os-athlete-${athlete.id}`} src={athlete.image} srcSet={`${athlete.smallImage} ${athlete.smallWidth}w, ${athlete.image} ${athlete.width}w`} sizes={sizes} width={athlete.width} height={athlete.height} alt={athlete.name} style={{ '--athlete-scale': scale, visibility: failed ? 'hidden' : undefined }} decoding="async" fetchPriority={athlete.id === 'lebron' ? 'high' : 'auto'} onError={() => setFailed(true)} />
+}
+function ProductVideo() {
+  const video = useRef(null)
+  const pausedByVisitor = useRef(false)
+  const [playing, setPlaying] = useState(false)
+  // Play only while visible, and never automatically for visitors who prefer reduced motion.
+  useEffect(() => {
+    const element = video.current
+    if (!element || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) element.pause()
+      else if (!pausedByVisitor.current) element.play().catch(() => {})
+    }, { threshold: 0.4 })
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
+  const toggle = () => {
+    const element = video.current
+    pausedByVisitor.current = !element.paused
+    if (element.paused) element.play().catch(() => {}); else element.pause()
+  }
+  return (
+    <div className="os-product-video">
+      <video ref={video} poster="/images/demo-walkthrough-poster.jpg" muted loop playsInline preload="none" aria-label="A 25-second walkthrough of the OpenSport demo: one-tap RSVPs, who’s coming, lineups, the roster, results, and the calendar." onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)}>
+        <source src="/videos/opensport-demo.webm" type="video/webm" />
+        <source src="/videos/opensport-demo.mp4" type="video/mp4" />
+        <img src="/images/demo-workspace.png" width="1280" height="940" alt="The OpenSport demo showing Union Sports Club’s schedule, upcoming matches, and RSVP buttons." />
+      </video>
+      <button type="button" className="os-video-toggle" aria-label={playing ? 'Pause the walkthrough video' : 'Play the walkthrough video'} onClick={toggle}>{playing ? <PauseIcon /> : <PlayIcon />}</button>
+    </div>
+  )
+}
+function PlayIcon() {
+  return <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5Z" /></svg>
+}
+function PauseIcon() {
+  return <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 4h4.5v16H6zm7.5 0H18v16h-4.5z" /></svg>
 }
 function StorySlideshow() {
   const [index, setIndex] = useState(0)
