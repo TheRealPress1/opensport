@@ -173,18 +173,24 @@ select test.denied($q$select public.complete_invitation('50000000-0000-0000-0000
 
 -- One-click cloud installs count setup-code attempts on the server only.
 set local role anon;
-select test.denied($q$select public.record_setup_attempt()$q$, '42501', 'anonymous cannot count setup attempts');
+select test.denied($q$select public.record_setup_attempt('visitor')$q$, '42501', 'anonymous cannot count setup attempts');
 set local role authenticated;
-select test.denied($q$select public.record_setup_attempt()$q$, '42501', 'members cannot count setup attempts');
+select test.denied($q$select public.record_setup_attempt('visitor')$q$, '42501', 'members cannot count setup attempts');
 select test.denied($q$select count(*) from private.setup_attempts$q$, '42501', 'members cannot read setup attempts');
 reset role;
 set local role service_role;
-select test.ok((select public.record_setup_attempt() = 1), 'the server counts a first setup attempt');
-select test.ok((select public.record_setup_attempt() = 2), 'setup attempts in the same hour add up');
+select test.ok((select bool_and(public.record_setup_attempt('guesser')) from generate_series(1, 10)), 'a visitor gets ten setup attempts an hour');
+select test.ok((select public.record_setup_attempt('guesser') = false), 'the eleventh attempt from that visitor is refused');
+select test.ok((select public.record_setup_attempt('owner')), 'one visitor using up their attempts does not lock out the owner');
 reset role;
-insert into private.setup_attempts(attempted_at) values (now() - interval '2 hours');
+select test.ok((select count(*) = 11 from private.setup_attempts), 'refused attempts are not stored');
+insert into private.setup_attempts(client) select 'crowd-' || n from generate_series(1, 39) n;
 set local role service_role;
-select test.ok((select public.record_setup_attempt() = 3), 'attempts older than an hour stop counting');
+select test.ok((select public.record_setup_attempt('newcomer') = false), 'fifty attempts an hour from everyone together stop all code checks');
+reset role;
+update private.setup_attempts set attempted_at = now() - interval '2 hours';
+set local role service_role;
+select test.ok((select public.record_setup_attempt('guesser')), 'attempts older than an hour stop counting');
 reset role;
 
 rollback;

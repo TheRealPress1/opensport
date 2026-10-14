@@ -42,8 +42,9 @@ You need a GitHub account. It takes about five minutes.
 ## Turn off public sign-ups
 
 New Supabase projects let anyone create an account. Those accounts can't see
-anything in your team, but it's tidier to switch sign-ups off. OpenSport reminds
-you in **Manage** until you do.
+anything in your team, and if one uses an address you later invite, OpenSport
+replaces it with a fresh account for your teammate. It's still tidier to switch
+sign-ups off. OpenSport reminds you in **Manage** until you do.
 
 In Vercel, open your project's **Storage** tab, select your Supabase database,
 and choose **Open in Supabase**. Go to **Authentication**, then **Sign In /
@@ -57,19 +58,24 @@ the owner gets back in. Pick at least 12 characters; a short phrase is easiest
 to remember. Keep it private, like a password.
 
 - **Creating the team:** the first screen asks for it, so nobody who finds your
-  address can claim the team before you do.
-- **Recovering the owner account:** on the sign-in screen, choose **Forgot
-  password?**, then enter the owner's email and the setup code. OpenSport
-  restores administrator access and opens a page to choose a new password.
+  address can claim the team before you do. Once the team exists, this screen
+  is gone.
+- **Recovering the owner account:** recovery is off until you prove you control
+  the Vercel project. Under your project's **Settings → Environment Variables**,
+  set `OPENSPORT_ALLOW_OWNER_RECOVERY` to `1` and redeploy. On the sign-in
+  screen, choose **Forgot password?**, then enter the owner's email and the
+  setup code. OpenSport restores administrator access and opens a page to choose
+  a new password. Remove the variable and redeploy once you're back in.
 
-After ten attempts in an hour, OpenSport stops checking codes until the hour
-passes. To change the code, edit `OPENSPORT_SETUP_CODE` under your Vercel
-project's **Settings → Environment Variables**, then redeploy.
+Each visitor can try ten codes an hour, and all visitors together fifty. To
+change the code, edit `OPENSPORT_SETUP_CODE` under your Vercel project's
+**Settings → Environment Variables**, then redeploy.
 
 ## Everyday use
 
 - **Teammates who forget their password:** an administrator creates a recovery
-  link from **Manage → Members**.
+  link from **Manage → Members**. A second administrator or coach can do the
+  same for the owner, which is simpler than owner recovery.
 - **Your own address:** add a domain under your Vercel project's **Settings →
   Domains**. Invitation links switch to it automatically.
 - **Off-season:** Supabase pauses free projects after about a week without

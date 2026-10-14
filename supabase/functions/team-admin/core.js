@@ -54,16 +54,25 @@ export function requireEnvironment(env) {
   return { ...env, url, siteUrl };
 }
 
-// The single production handler serializes requests for each email, avoiding
-// two simultaneous invite clicks leaving the DB digest and Auth token out of sync.
+// Serializes requests for each email within one server instance, avoiding two
+// simultaneous invite clicks leaving the DB digest and Auth token out of sync.
+// Cloud installs can run several instances; a clash there only spoils both links,
+// and the administrator creates a new one.
 const invitationLocks = new Map();
 async function invite(env, email, name) {
   const previous = invitationLocks.get(email) || Promise.resolve();
   const task = previous.catch(() => {}).then(async () => {
-    const existing = await supabaseApi(env, '/rest/v1/rpc/find_invitation_user', { p_email: email });
+    let existing = await supabaseApi(env, '/rest/v1/rpc/find_invitation_user', { p_email: email });
     if (existing) {
       const member = await oneMember(env, 'user_id', String(existing.id));
       if (member?.onboarding_completed_at) throw new ApiError(409, 'This person already has a membership. Use recovery or change their access instead.');
+      // Every OpenSport invitation creates a membership, so an account without one was
+      // registered some other way, such as an open Supabase sign-up. Replace it so
+      // whoever claimed this address first keeps no password or session.
+      if (!member) {
+        await supabaseApi(env, `/auth/v1/admin/users/${existing.id}`, undefined, env.serviceKey, 'DELETE');
+        existing = null;
+      }
     }
     // A person who verified an earlier link but left before completing their
     // profile needs a recovery token; Auth rejects a fresh invite for that user.

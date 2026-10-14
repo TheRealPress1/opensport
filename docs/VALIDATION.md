@@ -329,11 +329,21 @@ Supabase project, or GitHub repository was created.
   for returning visitors, owner recovery with the setup code, and a phone layout.
 - All six existing live browser workflows, including the reconnect checks,
   passed against that cloud install.
-- The eleventh setup-code attempt within an hour was refused, even with the
-  right code. Foreign origins and signed-out admin requests were refused.
-- 17 unit tests, eight Edge Function tests, the database security assertions
-  (now covering setup attempts), 12 public and cloud browser checks, eight Mac
-  setup-screen checks, ESLint, and the production build passed.
+- One visitor's eleventh code check within an hour was refused while another
+  visitor could still try. Once a team existed, setup answered before checking
+  any code, and owner recovery stayed off until `OPENSPORT_ALLOW_OWNER_RECOVERY`
+  was set. Foreign origins and signed-out admin requests were refused.
+- A stranger who registered a teammate's address first and held a session lost
+  it when the coach invited that address: the old token, refresh token, and
+  password all stopped working, and the real teammate joined with the fresh link.
+- An independent security review of the change found no way to claim a team or
+  gain administrator access without the setup code, and no secret leaks. Its
+  findings about lockouts, pre-registered accounts, and post-setup guessing were
+  fixed as described above.
+- 21 unit tests, eight Edge Function tests, the database security assertions
+  (now covering per-visitor and overall attempt limits), 14 public and cloud
+  browser checks, eight Mac setup-screen checks, ESLint, and the production
+  build passed.
 
 Remaining gate: one real Deploy-button run on Vercel with the Supabase
 Marketplace integration, covering provisioning timing, Supabase's pooled

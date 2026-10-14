@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { APP_BRAND } from '../lib/config'
 import { cloudRequest } from '../lib/cloud'
 
-export default function AuthScreen({ onLogin, cloud = false, setupError = '' }) {
+export default function AuthScreen({ onLogin, cloud = false, ownerRecovery = false, setupError = '' }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -29,14 +29,14 @@ export default function AuthScreen({ onLogin, cloud = false, setupError = '' }) 
       </form>
       <button className="text-sm text-brand-700 underline mt-4" onClick={() => setRecoveryHelp(true)}>Forgot password?</button>
       {recoveryHelp && !cloud && <p role="status" className="mt-3 text-sm text-slate-600">Ask your team organizer for a password recovery link. The organizer can create one from Manage → Members. Hosts can also recover the owner account using the documented host command.</p>}
-      {recoveryHelp && cloud && <OwnerRecovery />}
+      {recoveryHelp && cloud && <OwnerRecovery enabled={ownerRecovery} />}
     </div>
   </main>
 }
 
-// Cloud installs have no host command: the setup code chosen while deploying
-// restores the owner's access and opens a one-use password link.
-function OwnerRecovery() {
+// Cloud installs have no host command. Once the owner switches recovery on in
+// Vercel, the setup code restores their access and opens a one-use password link.
+function OwnerRecovery({ enabled }) {
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [error, setError] = useState('')
@@ -51,12 +51,17 @@ function OwnerRecovery() {
   }
   return <div className="mt-3 space-y-3 text-sm text-slate-600">
     <p role="status">Ask your team organizer for a password recovery link. The organizer can create one from Manage → Members.</p>
-    <form onSubmit={submit} className="space-y-3 rounded-lg border border-slate-200 p-4">
+    {!enabled && <div className="space-y-2 rounded-lg border border-slate-200 p-4">
+      <p className="font-semibold text-slate-800">Team owner?</p>
+      <p>Turn on owner recovery first. In your Vercel project, open Settings, then Environment Variables, set <code className="font-semibold">OPENSPORT_ALLOW_OWNER_RECOVERY</code> to <code className="font-semibold">1</code>, and redeploy. Then come back here and use your setup code.</p>
+    </div>}
+    {enabled && <form onSubmit={submit} className="space-y-3 rounded-lg border border-slate-200 p-4">
       <p className="font-semibold text-slate-800">Team owner? Use your setup code</p>
       {error && <p role="alert" className="text-red-700">{error}</p>}
       <label className="block font-medium text-slate-800">Email<input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2" type="email" autoComplete="username" required value={email} onChange={event => setEmail(event.target.value)} /></label>
       <label className="block font-medium text-slate-800">Setup code<input className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2" type="password" autoComplete="off" required value={code} onChange={event => setCode(event.target.value)} /></label>
       <button disabled={busy} className="w-full rounded-lg border border-brand-600 py-2 font-semibold text-brand-700 disabled:opacity-50">{busy ? 'Checking…' : 'Recover access'}</button>
-    </form>
+      <p className="text-xs text-slate-500">Once you’re back in, remove the variable and redeploy to turn recovery off again.</p>
+    </form>}
   </div>
 }
