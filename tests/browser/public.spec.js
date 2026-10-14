@@ -174,7 +174,6 @@ test('demo uses real views, editable RSVPs, and zero backend requests', async ({
   page.on('pageerror', error => errors.push(error.message))
   await page.goto('/#/demo')
   await expect(page.getByRole('heading', { name: 'Union Sports Club' })).toBeVisible()
-  await expect(page.getByText('Demo · fictional data · changes reset on refresh')).toBeVisible()
   const maybe = page.getByRole('button', { name: /^Maybe \(1\)/ }).first()
   await maybe.click()
   await expect(page.getByRole('button', { name: /^Maybe \(2\)/ }).first()).toBeVisible()

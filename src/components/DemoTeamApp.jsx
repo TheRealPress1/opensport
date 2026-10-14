@@ -5,7 +5,6 @@ import TeamWorkspace from './TeamWorkspace'
 
 export default function DemoTeamApp() {
   const [data, setData] = useState(createDemoData)
-  const [resetKey, setResetKey] = useState(0)
   const me = data.members[0].id
   const team = {
     ...data, me, myInfo: data.members[0], isAdmin: false,
@@ -25,16 +24,15 @@ export default function DemoTeamApp() {
     getTemplateLineups: () => [],
     clearError: () => {},
   }
-  const reset = () => { setData(createDemoData()); setResetKey(key => key + 1) }
   return (
     <>
       <div className="bg-brand-700 px-4 py-3 text-white">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3 text-xs">
-          <div><a className="font-bold underline underline-offset-4" href="/">← OpenSport</a><p className="mt-1">Demo · fictional data · changes reset on refresh</p></div>
-          <div className="flex flex-wrap items-center gap-4"><label className="font-semibold">Sport mode<select aria-label="Demo sport mode" className="ml-2 rounded-lg border border-white/70 bg-white px-2 py-2 text-gray-900" value={data.settings.sport_mode} onChange={event => setData(previous => ({ ...previous, settings: { ...previous.settings, sport_mode: event.target.value } }))}><option value="soccer">Soccer</option><option value="general">General</option></select></label><button onClick={reset} className="rounded-lg border border-white/70 px-3 py-2 font-semibold transition-colors hover:bg-white/15">Reset demo</button><a className="font-semibold underline underline-offset-4" href={DOWNLOAD_URL} download>Host your team ↗</a></div>
+          <div><a className="font-bold underline underline-offset-4" href="/">← OpenSport</a></div>
+          <div className="flex flex-wrap items-center gap-4"><label className="font-semibold">Sport mode<select aria-label="Demo sport mode" className="ml-2 rounded-lg border border-white/70 bg-white px-2 py-2 text-gray-900" value={data.settings.sport_mode} onChange={event => setData(previous => ({ ...previous, settings: { ...previous.settings, sport_mode: event.target.value } }))}><option value="soccer">Soccer</option><option value="general">General</option></select></label><a className="font-semibold underline underline-offset-4" href={DOWNLOAD_URL} download>Host your team ↗</a></div>
         </div>
       </div>
-      <TeamWorkspace key={resetKey} team={team} demo />
+      <TeamWorkspace team={team} demo />
     </>
   )
 }
