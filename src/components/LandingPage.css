@@ -115,6 +115,18 @@
 .project-site .os-preview-note strong { font-weight: 650; }.project-site .os-preview-note p { color: var(--muted); margin-top: 7px; }
 .project-site .os-platform-note { display: block; color: var(--muted); font-size: 9px; margin-top: 18px; }
 .project-site .os-hosting-options article>.os-server-note { border-top: 1px solid var(--line); padding-top: 20px; margin-top: 25px; font-size: 11px; }
+.project-site .os-server-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px; margin-top: 22px; }.project-site .os-server-actions .os-text-link { margin-top: 0; }
+.project-site .os-hosting-options .os-hosting-cloud { grid-column: 1 / -1; background: var(--green); border-color: var(--green); color: var(--paper); }
+.project-site .os-hosting-cloud .os-status-label { border-color: #f7f5ed80; }
+.project-site .os-cloud-layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: 9%; align-items: end; }
+.project-site .os-hosting-cloud .os-cloud-layout p { font-size: 14px; line-height: 1.85; color: var(--paper); margin-top: 14px; max-width: 560px; }
+.project-site .os-cloud-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 26px; margin-top: 26px; }
+.project-site .os-button-light { background: var(--paper); color: var(--green); }.project-site .os-button-light:hover { background: #fff; }
+.project-site .os-hosting-cloud .os-text-link { color: var(--paper); margin-top: 0; }.project-site .os-hosting-cloud .os-text-link:hover { color: var(--peach); }
+.project-site .os-hosting-cloud a:focus-visible { outline-color: var(--peach); }
+.project-site .os-cloud-steps { list-style: none; border-top: 1px solid #f7f5ed40; }
+.project-site .os-cloud-steps li { display: flex; gap: 18px; padding-block: 15px; border-bottom: 1px solid #f7f5ed40; font-size: 13px; line-height: 1.6; }
+.project-site .os-cloud-steps span { flex-shrink: 0; padding-top: 3px; font-size: 10px; font-weight: 700; letter-spacing: 1.65px; }
 .project-site .os-contribute { border-block: 1px solid var(--line); padding-block: 50px; position: relative; isolation: isolate; display: flex; align-items: center; justify-content: space-between; gap: 30px; overflow: hidden; }
 .project-site .os-contribute h2 { font-size: clamp(44px, 4.4vw, 62px); line-height: 1; margin-top: 18px; }
 .project-site .os-contribute p:last-child { color: var(--muted); font-size: 13px; line-height: 1.8; margin-top: 17px; }.project-site .os-contribute .os-button { position: relative; flex-shrink: 0; }
@@ -184,6 +196,7 @@
   .project-site .os-compare-table tbody th { grid-column: 1 / -1; padding: 16px 12px 8px; border-bottom: 0; font-size: 8px; line-height: 1.6; letter-spacing: 1.1px; background: linear-gradient(90deg, transparent 50%, var(--green-tint) 50%); }
   .project-site .os-story-layout { grid-template-columns: 1fr; padding-block: 50px; gap: 22px; }
   .project-site .os-story-copy { padding-top: 0; }.project-site .os-story-copy>.os-story-lead { font-size: 18px; }.project-site .os-story-copy>p { font-size: 12px; line-height: 1.9; }
+  .project-site .os-cloud-layout { grid-template-columns: 1fr; gap: 24px; }.project-site .os-hosting-cloud .os-cloud-layout p { font-size: 12px; }.project-site .os-cloud-steps li { font-size: 12px; }
   .project-site .os-hosting-options { grid-template-columns: 1fr; margin-top: 28px; gap: 16px; }.project-site .os-hosting-options article { padding: 24px; }.project-site .os-hosting-options h3 { font-size: 23px; margin-top: 24px; }.project-site .os-hosting-options article>p { font-size: 12px; }.project-site .os-preview-note { font-size: 11px; }
   .project-site .os-contribute { flex-direction: column; align-items: start; padding-block: 37px; gap: 24px; }.project-site .os-contribute h2 { font-size: 47px; }.project-site .os-contribute p:last-child { font-size: 12px; }.project-site .os-contribute-star { right: -10px; font-size: 250px; bottom: -65px; }
   .project-site .os-footer { padding-top: 28px; padding-bottom: 13px; }.project-site .os-footer-main { flex-direction: column; align-items: start; gap: 16px; }.project-site .os-footer-links { margin-left: 0; gap: 23px; }.project-site .os-footer-main>p { font-size: 10px; }.project-site .os-photo-credits { margin-top: 18px; }.project-site .os-photo-credits ul { grid-template-columns: 1fr; gap: 16px; }
