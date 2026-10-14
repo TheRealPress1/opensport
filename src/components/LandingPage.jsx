@@ -1,236 +1,124 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { DOWNLOAD_URL, RELEASE_VERSION, REPOSITORY_URL, SETUP_URL } from '../lib/project'
+import { athletes, photoCreditsUrl } from '../lib/athletes'
+import licenseUrl from '../../LICENSE?url&no-inline'
+import contributionUrl from '../../CONTRIBUTING.md?url&no-inline'
+import './LandingPage.css'
 
-export default function LandingPage({ onGetStarted }) {
-  const [visible, setVisible] = useState(false)
-  useEffect(() => { setVisible(true) }, [])
+// TeamSnap claims are sourced in the comparison note; re-check them before each release.
+const comparison = [
+  ['Price', 'Free to start. Paid upgrades unlock availability tracking and bigger rosters.', 'Free, RSVPs included. Hosting costs depend on your setup.'],
+  ['Ads', 'Banner and full-screen ads in the mobile app unless you pay to remove them.', 'None.'],
+  ['Source code', 'Closed.', 'Open source under the MIT license.'],
+  ['Your team’s data', 'Hosted by TeamSnap.', 'On a computer or server you control.'],
+  ['Make it your own', 'Use the settings TeamSnap provides.', 'Change anything in the code.'],
+  ['Phone apps, payments, registration', 'Yes.', 'Not yet. OpenSport runs in any browser.'],
+]
 
+export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white overflow-hidden">
-      {/* Animated gradient blobs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-violet-600/20 blur-[120px] animate-pulse" />
-        <div className="absolute top-1/3 -right-40 w-[500px] h-[500px] rounded-full bg-cyan-500/15 blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute -bottom-40 left-1/3 w-[500px] h-[500px] rounded-full bg-violet-500/10 blur-[120px] animate-pulse" style={{ animationDelay: '4s' }} />
-      </div>
-
-      {/* Nav */}
-      <nav className="relative z-10 border-b border-white/5">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-violet-700 flex items-center justify-center shadow-lg shadow-violet-500/20">
-              <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
-                <line x1="2" y1="12" x2="22" y2="12" />
-              </svg>
+    <div className="project-site">
+      <a className="os-skip" href="#main">Skip to content</a>
+      <header className="os-nav os-container">
+        <a className="os-wordmark" href="#" aria-label="OpenSport home"><SportMark />OpenSport<span className="os-wordmark-period">.</span></a>
+        <nav aria-label="Main navigation">
+          <a className="os-nav-secondary" href="#compare">vs. TeamSnap</a>
+          <a className="os-nav-secondary" href="#story">Our story</a>
+          <a href={SETUP_URL}>Setup guide</a>
+          <a className="os-github" href={REPOSITORY_URL} target="_blank" rel="noreferrer" aria-label="View OpenSport on GitHub"><GitHubIcon /><span>GitHub</span><Arrow /></a>
+        </nav>
+      </header>
+      <main id="main" tabIndex={-1}>
+        <section className="os-hero os-container" aria-labelledby="hero-heading">
+          <p className="os-eyebrow os-hero-eyebrow"><span className="os-asterisk" aria-hidden="true">✳</span> FOR THE LOVE OF THE GAME</p>
+          <h1 id="hero-heading">Behind every great athlete{' '}<br /><span>is a team.</span></h1>
+          <p className="os-hero-alternative">The free, open-source alternative to <strong>TeamSnap</strong>.</p>
+          <p className="os-hero-description">Schedules, rosters, and RSVPs in one place. No ads, no subscription,<br className="os-desktop-break" /> and your team’s data stays on a host you control.</p>
+          <div className="os-hero-actions">
+            <a className="os-button os-button-primary" href="/#/demo">Try the demo <Arrow /></a>
+            <div className="os-download-action"><a className="os-button os-button-secondary" href={DOWNLOAD_URL} download>Download source <DownloadIcon /></a><span>Source code · setup required</span></div>
+          </div>
+          <figure className="os-athlete-poster" aria-label="Athletes from soccer, basketball, baseball, and American football, arranged from shortest to tallest">
+            <div className="os-height-lines" aria-hidden="true">{[0, 1, 2, 3, 4].map(line => <span key={line} />)}</div>
+            <div className="os-poster-word" aria-hidden="true">ALL TOGETHER.</div>
+            <div className="os-athlete-lineup">
+              {athletes.map(athlete => <AthletePortrait key={athlete.id} athlete={athlete} />)}
             </div>
-            <span className="text-lg font-bold tracking-tight">TeamBabo</span>
+            <figcaption className="os-poster-caption"><span>DIFFERENT GAMES. SAME TEAM SPIRIT.</span><span>YOUR TEAM BELONGS HERE. <Arrow /></span></figcaption>
+          </figure>
+        </section>
+        <div className="os-principles" aria-label="Project principles"><span>ANY SPORT.</span><i aria-hidden="true">✳</i><span>YOUR TEAM.</span><i aria-hidden="true">✳</i><span>YOUR DATA.</span><i aria-hidden="true">✳</i><span>OPEN TO EVERYONE.</span></div>
+        <section className="os-product os-container" id="features" aria-labelledby="product-heading">
+          <div className="os-section-heading"><div><p className="os-eyebrow">01 / THE EVERYDAY ESSENTIALS</p><h2 id="product-heading">Less chasing.<br />More playing.</h2></div><div className="os-section-aside"><p>The group chat can only do so much. Give your team one place to find the plan, say they’re in, and get ready for game day.</p><a className="os-text-link" href="/#/demo">Meet your demo team <Arrow /></a></div></div>
+          <figure className="os-product-preview">
+            <div className="os-browser-bar" aria-hidden="true"><span className="os-browser-dots"><i /><i /><i /></span><span>YOUR TEAM’S HOME</span><span>OPENSPORT ↗</span></div>
+            <a href="/#/demo" aria-label="Explore the Union Sports Club demo"><img src="/images/demo-workspace.png" width="1280" height="940" alt="The OpenSport demo showing Union Sports Club’s schedule, upcoming matches, and RSVP buttons." loading="lazy" decoding="async" /></a>
+            <figcaption><span><span className="os-demo-dot" /> FICTIONAL TEAM. REAL OPENSPORT.</span><span>No account needed. Changes reset on refresh.</span></figcaption>
+          </figure>
+          <div className="os-features">
+            <Feature number="01" title="A plan everyone can find." description="Matches, practices, locations, and calendar exports. Your whole week, in one place." detail="SCHEDULE + CALENDAR" />
+            <Feature number="02" title="Know who’s showing up." description="A shared roster and simple going, maybe, or can’t-make-it RSVPs. Fewer loose ends before game day." detail="ROSTER + RSVPs" />
+            <Feature number="03" title="Keep the season’s story." description="Record final scores for any sport. Soccer teams can also publish lineups and track goals and assists." detail="RESULTS + SOCCER TOOLS" />
           </div>
-          <button
-            onClick={onGetStarted}
-            className="text-sm font-medium text-white/60 hover:text-white transition-colors px-4 py-2 rounded-lg hover:bg-white/5"
-          >
-            Sign In
-          </button>
-        </div>
-      </nav>
-
-      {/* Hero */}
-      <section className={`relative z-10 max-w-6xl mx-auto px-6 pt-24 pb-20 text-center transition-all duration-1000 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-violet-300 text-xs font-semibold mb-8 animate-fade-in">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-          Free forever for teams
-        </div>
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] max-w-4xl mx-auto">
-          Your team hub.
-          <br />
-          <span className="bg-gradient-to-r from-violet-400 via-violet-300 to-cyan-400 bg-clip-text text-transparent">
-            Built for soccer.
-          </span>
-        </h1>
-        <p className="mt-6 text-lg md:text-xl text-white/40 max-w-xl mx-auto leading-relaxed">
-          Schedule, RSVP, lineups, stats, and WhatsApp — everything your team needs in one place. Free.
-        </p>
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <button
-            onClick={onGetStarted}
-            className="group px-8 py-4 bg-gradient-to-r from-violet-600 to-violet-500 text-white font-semibold rounded-2xl hover:from-violet-500 hover:to-violet-400 active:scale-[0.97] transition-all shadow-2xl shadow-violet-600/25 text-base relative overflow-hidden"
-          >
-            <span className="relative z-10">Get Started — It's Free</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-          </button>
-        </div>
-      </section>
-
-      {/* Glass Feature Cards */}
-      <section className={`relative z-10 max-w-6xl mx-auto px-6 py-16 transition-all duration-1000 delay-300 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
-        <div className="grid md:grid-cols-3 gap-4">
-          <GlassCard
-            delay={0}
-            icon={<CalendarIcon />}
-            title="Schedule & RSVP"
-            description="Create events. Players RSVP instantly. Real-time counts show who's in."
-          />
-          <GlassCard
-            delay={100}
-            icon={<UsersIcon />}
-            title="Roster & Attendance"
-            description="Track who shows up. Sort by position or attendance rate. Hold players accountable."
-          />
-          <GlassCard
-            delay={200}
-            icon={<FieldIcon />}
-            title="Lineup Builder"
-            description="Drag-and-drop formations. Save templates. Publish for game day."
-          />
-          <GlassCard
-            delay={300}
-            icon={<ChartIcon />}
-            title="Stats & Results"
-            description="Wins, draws, losses. Goal scorers and assists. Your season at a glance."
-          />
-          <GlassCard
-            delay={400}
-            icon={<PinIcon />}
-            title="Smart Locations"
-            description="Google Places search. One-tap directions from any event card."
-          />
-          <GlassCard
-            delay={500}
-            icon={<ChatIcon />}
-            title="WhatsApp Built-In"
-            description="Message your coach, chase non-responders, or text the whole squad."
-          />
-        </div>
-      </section>
-
-      {/* Comparison */}
-      <section className={`relative z-10 max-w-6xl mx-auto px-6 py-16 transition-all duration-1000 delay-500 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
-        <div className="rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-8 md:p-14">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-3">
-            Why pay for TeamSnap?
-          </h2>
-          <p className="text-white/40 text-center max-w-lg mx-auto mb-10">
-            Everything your rec or club team needs. Zero cost.
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
-            <ComparisonItem label="Price" ours="Free" theirs="$15/mo" />
-            <ComparisonItem label="RSVP" ours="Instant" theirs="Clunky" />
-            <ComparisonItem label="Lineups" ours="Visual" theirs="None" />
-            <ComparisonItem label="WhatsApp" ours="Built-in" theirs="None" />
+        </section>
+        <section className="os-compare os-container" id="compare" aria-labelledby="compare-heading">
+          <div className="os-section-heading"><div><p className="os-eyebrow">02 / OPENSPORT VS. TEAMSNAP</p><h2 id="compare-heading">TeamSnap is huge.<br /><span>OpenSport is yours.</span></h2></div><p className="os-section-aside">TeamSnap is a big business, with 30 million users by its own count. OpenSport keeps the everyday essentials and makes them free, open source, and yours to run.</p></div>
+          {/* Explicit roles keep table semantics when small screens restyle the rows as grids. */}
+          <table className="os-compare-table" role="table">
+            <caption className="sr-only">How OpenSport compares with TeamSnap</caption>
+            <thead role="rowgroup"><tr role="row"><td role="cell" /><th scope="col" role="columnheader">TeamSnap<span>30 million users. 19,000 organizations.</span></th><th scope="col" role="columnheader" className="os-compare-us">OpenSport<span>Started by one college captain. Open to every team.</span></th></tr></thead>
+            <tbody role="rowgroup">{comparison.map(([topic, teamSnap, openSport]) => <tr key={topic} role="row"><th scope="row" role="rowheader">{topic}</th><td role="cell">{teamSnap}</td><td role="cell" className="os-compare-us">{openSport}</td></tr>)}</tbody>
+          </table>
+          <p className="os-compare-note">TeamSnap details come from its <a href="https://www.teamsnap.com/pricing" target="_blank" rel="noreferrer">pricing page</a> and <a href="https://helpme.teamsnap.com/article/227-managing-your-teamsnap-plus-subscription" target="_blank" rel="noreferrer">help center</a>, checked October 2026. TeamSnap is a trademark of its owner. OpenSport is independent and not affiliated with or endorsed by TeamSnap.</p>
+        </section>
+        <section className="os-story" id="story" aria-labelledby="story-heading">
+          <div className="os-container os-story-layout">
+            <div className="os-story-heading"><p className="os-eyebrow">03 / FROM PLAYER TO BUILDER</p><h2 id="story-heading">A lifelong game.<br />A simple idea.</h2><div className="os-story-number" aria-hidden="true">03<span>YEARS OLD WHEN<br />IT ALL STARTED.</span></div><div className="os-story-field" aria-hidden="true"><span /></div></div>
+            <div className="os-story-copy"><p className="os-story-lead">I’ve played soccer since I was three. Every team I was on used TeamSnap to organize and let family and friends follow along.</p><p>When I became captain of my college soccer team, I realized how critical team organization was—and how expensive it could be to use TeamSnap for a whole team.</p><p>So I built OpenSport, an independent, open-source alternative to TeamSnap. A way for sports teams to organize themselves, keep things simple, and make more room for the joy of playing.</p><p className="os-story-signature"><SportMark /> Built by a player. Open to every team.</p></div>
           </div>
-        </div>
-      </section>
-
-      {/* Bottom CTA */}
-      <section className={`relative z-10 max-w-6xl mx-auto px-6 py-20 text-center transition-all duration-1000 delay-700 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
-        <h2 className="text-3xl md:text-5xl font-bold mb-4">
-          Ready to run your team
-          <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent"> better</span>?
-        </h2>
-        <p className="text-white/40 mb-10 max-w-md mx-auto">
-          Set up in under 2 minutes. No credit card. No catch.
-        </p>
-        <button
-          onClick={onGetStarted}
-          className="group px-8 py-4 bg-gradient-to-r from-violet-600 to-violet-500 text-white font-semibold rounded-2xl hover:from-violet-500 hover:to-violet-400 active:scale-[0.97] transition-all shadow-2xl shadow-violet-600/25 text-base relative overflow-hidden"
-        >
-          <span className="relative z-10">Get Started — It's Free</span>
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-        </button>
-      </section>
-
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-white/5">
-        <div className="max-w-6xl mx-auto px-6 py-8 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-gradient-to-br from-violet-500 to-violet-700 flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" />
-              </svg>
-            </div>
-            <span className="text-sm font-semibold text-white/60">TeamBabo</span>
+        </section>
+        <section className="os-hosting os-container" id="hosting" aria-labelledby="hosting-heading">
+          <div className="os-section-heading"><div><p className="os-eyebrow">04 / MAKE IT YOUR OWN</p><h2 id="hosting-heading">Your team.<br />Your home court.</h2></div><p className="os-section-aside">One installation. One private team.<br />OpenSport is free to adapt and run on a host you control. Here’s where the project stands today.</p></div>
+          <div className="os-hosting-options">
+            <article className="os-hosting-mac"><div className="os-hosting-top"><ComputerIcon /><span className="os-status-label">LOCAL ALPHA</span></div><h3>A team home on your Mac.</h3><p>We’re building a Mac app that guides you through hosting your team, without Docker or Terminal.</p><div className="os-preview-note"><strong>The Mac preview works on the host Mac only.</strong><p>Internet sharing is still in development, so teammates can’t connect remotely yet. Public Mac downloads are not available.</p></div><span className="os-platform-note">Apple silicon · macOS 14 or later</span></article>
+            <article className="os-hosting-server"><div className="os-hosting-top"><CodeIcon /><span className="os-status-label">ADVANCED SETUP</span></div><h3>Bring your own server.</h3><p>Developers can download the source and use the Docker setup guide. Remote access needs an always-on host, a domain, and HTTPS.</p><a className="os-text-link" href={SETUP_URL}>Read the server setup guide <Arrow /></a><p className="os-server-note">No OpenSport subscription or Supabase cloud account required. Hosting and domain costs depend on your setup.</p></article>
           </div>
-          <p className="text-xs text-white/20">Built for teams that play together.</p>
-        </div>
+        </section>
+        <section className="os-contribute os-container" aria-labelledby="contribute-heading"><div><p className="os-eyebrow">GOOD THINGS ARE BUILT TOGETHER.</p><h2 id="contribute-heading">The next move is ours.</h2><p>Try it. Break it. Make it better.<br />There’s room for you on this team.</p></div><a className="os-button os-button-primary" href={REPOSITORY_URL} target="_blank" rel="noreferrer"><GitHubIcon /> Explore on GitHub <Arrow /></a><span className="os-contribute-star" aria-hidden="true">✳</span></section>
+      </main>
+      <footer className="os-footer os-container">
+        <div className="os-footer-main"><a className="os-wordmark" href="#" aria-label="OpenSport home"><SportMark />OpenSport<span className="os-wordmark-period">.</span></a><p>For the love of the game.<br /><span>Independent project. Not affiliated with or endorsed by TeamSnap.</span></p><div className="os-footer-links"><a href={contributionUrl}>Contribution guide</a><a href={licenseUrl}>MIT code license</a><a href={SETUP_URL}>Setup guide</a><a href={DOWNLOAD_URL} download>Source · v{RELEASE_VERSION}</a></div></div>
+        <details className="os-photo-credits"><summary>Photo credits <span aria-hidden="true">+</span></summary><p>Athletes are shown as sporting inspirations. No affiliation or endorsement is implied. Photography retains its own licenses, separate from the MIT-licensed code.</p><ul>{athletes.map(athlete => <li key={athlete.id}><strong>{athlete.name}</strong><span>Photo by {athlete.photographer}. <a href={athlete.sourceUrl} target="_blank" rel="noreferrer">Original photograph</a> · <a href={athlete.licenseUrl} target="_blank" rel="noreferrer">{athlete.license}</a>. Background removed for this collage; see <a href={photoCreditsUrl}>asset credits</a> for modifications and height references.</span></li>)}</ul></details>
       </footer>
     </div>
   )
 }
-
-function GlassCard({ icon, title, description, delay = 0 }) {
-  const [hovered, setHovered] = useState(false)
-  return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="group relative rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-6 hover:border-violet-500/30 hover:bg-white/[0.06] transition-all duration-300 cursor-default"
-      style={{ animationDelay: `${delay}ms` }}
-    >
-      {/* Glow on hover */}
-      <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-500/10 to-transparent transition-opacity duration-500 ${hovered ? 'opacity-100' : 'opacity-0'}`} />
-      <div className="relative z-10">
-        <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 text-violet-400 group-hover:text-violet-300 group-hover:border-violet-500/20 transition-colors">
-          {icon}
-        </div>
-        <h3 className="text-sm font-semibold text-white mb-1.5">{title}</h3>
-        <p className="text-sm text-white/40 leading-relaxed">{description}</p>
-      </div>
-    </div>
-  )
+function AthletePortrait({ athlete }) {
+  const [failed, setFailed] = useState(false)
+  const scale = athlete.heightCm / 206 * (athlete.poseScale || 1)
+  const widthScale = scale * athlete.width / athlete.height
+  // Match the poster's responsive height so small screens fetch smaller cutouts.
+  const sizes = `(max-width: 650px) ${37 * widthScale}vw, (max-width: 1050px) ${31 * widthScale}vw, (max-width: 1403px) ${29 * widthScale}vw, ${407 * widthScale}px`
+  return <img data-athlete={athlete.id} className={`os-athlete os-athlete-${athlete.id}`} src={athlete.image} srcSet={`${athlete.smallImage} ${athlete.smallWidth}w, ${athlete.image} ${athlete.width}w`} sizes={sizes} width={athlete.width} height={athlete.height} alt={athlete.name} style={{ '--athlete-scale': scale, visibility: failed ? 'hidden' : undefined }} decoding="async" fetchPriority={athlete.id === 'lebron' ? 'high' : 'auto'} onError={() => setFailed(true)} />
 }
-
-function ComparisonItem({ label, ours, theirs }) {
-  return (
-    <div className="text-center">
-      <div className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-3">{label}</div>
-      <div className="text-base font-bold text-violet-400 mb-1">{ours}</div>
-      <div className="text-xs text-white/20 line-through">{theirs}</div>
-    </div>
-  )
+function Feature({ number, title, description, detail }) {
+  return <article className="os-feature"><span className="os-feature-number">{number}</span><p className="os-eyebrow">{detail}</p><h3>{title}</h3><p>{description}</p></article>
 }
-
-// Icons
-function CalendarIcon() {
-  return (
-    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-    </svg>
-  )
+function SportMark() {
+  return <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M6 24 16 6h10L16 24H6Z" fill="currentColor" /><path d="m21 26 8-14v14h-8Z" fill="currentColor" opacity=".5" /></svg>
 }
-function UsersIcon() {
-  return (
-    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-    </svg>
-  )
+function Arrow() {
+  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" /></svg>
 }
-function FieldIcon() {
-  return (
-    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5" />
-    </svg>
-  )
+function DownloadIcon() {
+  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5" /></svg>
 }
-function ChartIcon() {
-  return (
-    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
-    </svg>
-  )
+function ComputerIcon() {
+  return <svg width="31" height="31" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="4" y="5" width="24" height="18" rx="2" /><path d="M4 19h24M16 23v5m-6 0h12" /></svg>
 }
-function PinIcon() {
-  return (
-    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-    </svg>
-  )
+function CodeIcon() {
+  return <svg width="31" height="31" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="m10 9-7 7 7 7m12-14 7 7-7 7M19 5l-6 22" /></svg>
 }
-function ChatIcon() {
-  return (
-    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
-    </svg>
-  )
+function GitHubIcon() {
+  return <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .7a11.5 11.5 0 0 0-3.64 22.4c.58.1.79-.25.79-.55v-2.14c-3.22.7-3.9-1.37-3.9-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.16.08 1.78 1.19 1.78 1.19 1.03 1.77 2.71 1.26 3.37.97.1-.75.4-1.26.74-1.55-2.57-.29-5.28-1.29-5.28-5.72 0-1.26.45-2.29 1.19-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.44-2.71 5.42-5.29 5.71.42.36.79 1.06.79 2.14v3.18c0 .31.21.67.8.55A11.5 11.5 0 0 0 12 .7Z" /></svg>
 }

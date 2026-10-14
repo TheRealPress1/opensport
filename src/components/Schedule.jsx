@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import EventCard from './EventCard'
 import CalendarView from './CalendarView'
+import { useTeamSettings } from '../lib/TeamSettingsContext'
+import { todayInTimezone } from '../lib/utils'
 
 // List icon (three horizontal lines)
 function ListIcon({ className }) {
@@ -29,11 +31,11 @@ export default function Schedule({
   isAdmin = false,
   onRsvp,
   onSelectEvent,
-  onAddEvent,
 }) {
   const [view, setView] = useState('list') // 'list' | 'calendar'
 
-  const today = new Date()
+  const settings = useTeamSettings()
+  const today = new Date(todayInTimezone(settings.timezone) + 'T00:00:00')
   today.setHours(0, 0, 0, 0)
 
   // Parse date string as local time (not UTC)
@@ -86,7 +88,7 @@ export default function Schedule({
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-8 space-y-10">
+    <div className="w-full space-y-8">
       {/* Upcoming Section */}
       <section>
         <div className="flex items-center justify-between mb-6">
@@ -132,9 +134,6 @@ export default function Schedule({
         ) : (
           <CalendarView
             events={events}
-            rsvps={rsvps}
-            me={me}
-            onRsvp={onRsvp}
             onSelectEvent={onSelectEvent}
           />
         )}
@@ -154,7 +153,7 @@ function PastEventsSection({ pastEvents, renderEventCards }) {
   return (
     <section>
       <button
-        onClick={() => setOpen(o => !o)}
+        aria-expanded={open} onClick={() => setOpen(o => !o)}
         className="flex items-center gap-2 mb-6 group"
       >
         <h2 className="text-2xl font-semibold text-gray-900">Past Events</h2>

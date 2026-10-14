@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
-import { fmtTime } from '../lib/utils'
+import { useState } from 'react'
+import { useTeamSettings } from '../lib/TeamSettingsContext'
+import { fmtTime, todayInTimezone } from '../lib/utils'
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
@@ -39,12 +40,10 @@ function getWeeksForMonth(year, month) {
 
 export default function CalendarView({
   events = [],
-  rsvps = [],
-  me,
-  onRsvp,
   onSelectEvent,
 }) {
-  const now = new Date()
+  const settings = useTeamSettings()
+  const now = new Date(todayInTimezone(settings.timezone) + 'T00:00:00')
   const [viewYear, setViewYear] = useState(now.getFullYear())
   const [viewMonth, setViewMonth] = useState(now.getMonth())
   const [mode, setMode] = useState('month') // 'month' | 'week'

@@ -5,7 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', '.context', '.opensport', 'deploy/upstream', 'desktop/resources', 'desktop/dist', 'desktop/out', 'playwright-report', 'test-results']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [
@@ -25,5 +25,10 @@ export default defineConfig([
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
     },
+  },
+  {
+    files: ['scripts/**/*.mjs', 'desktop/**/*.{mjs,cjs}', 'tests/**/*.{js,mjs}', 'supabase/tests/**/*.mjs', 'playwright.config.js'],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
+    rules: { ...js.configs.recommended.rules },
   },
 ])

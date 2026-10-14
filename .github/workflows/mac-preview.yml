@@ -1,0 +1,34 @@
+name: OpenSport Mac preview
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mac-preview:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx install-electron
+      - run: npx playwright install chromium
+      - run: npm run desktop:prepare
+      - run: npm run test:desktop
+      - name: Verify the actual Mac window and privileged bridge
+        run: OPENSPORT_ELECTRON_TEST=1 node --test desktop/tests/electron.integration.mjs
+      - name: Verify the native server
+        run: OPENSPORT_NATIVE_TEST_DATA_DIR=.context/mac-ci node desktop/tests/native.integration.mjs
+      - name: Verify guided setup, browser sign-in, backup, and restart
+        run: OPENSPORT_ELECTRON_HOST_TEST=1 OPENSPORT_NATIVE_TEST_SEED_CACHE=.context/mac-ci/runtime/home/cache node --test desktop/tests/electron-host.integration.mjs
+      - run: npm run desktop:build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: opensport-mac-local-preview-adhoc
+          path: |
+            desktop/out/*.dmg
+            desktop/out/*.dmg.sha256
+          retention-days: 7
