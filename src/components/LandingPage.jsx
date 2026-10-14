@@ -23,7 +23,7 @@ export default function LandingPage() {
         <a className="os-wordmark" href="#" aria-label="OpenSport home"><SportMark />OpenSport<span className="os-wordmark-period">.</span></a>
         <nav aria-label="Main navigation">
           <a className="os-nav-secondary" href="#compare">vs. TeamSnap</a>
-          <a className="os-nav-secondary" href="#story">Our story</a>
+          <a className="os-nav-secondary" href="#story">My story</a>
           <a href={SETUP_URL}>Setup guide</a>
           <a className="os-github" href={REPOSITORY_URL} target="_blank" rel="noreferrer" aria-label="View OpenSport on GitHub"><GitHubIcon /><span>GitHub</span><Arrow /></a>
         </nav>
