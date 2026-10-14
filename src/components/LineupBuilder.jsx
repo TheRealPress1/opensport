@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { FORMATIONS, FORMATION_KEYS } from '../lib/formations'
+import { useModal } from '../lib/useModal'
 
 export default function LineupBuilder({
   event = null,
@@ -10,6 +11,8 @@ export default function LineupBuilder({
   onDelete,
   onClose,
 }) {
+  const modalRef = useModal(onClose)
+  const [error, setError] = useState('')
   const [formation, setFormation] = useState(lineup?.formation || '4-4-2')
   const [name, setName] = useState(lineup?.name || '')
   const [slots, setSlots] = useState(() => {
@@ -21,7 +24,6 @@ export default function LineupBuilder({
       memberId: null,
     }))
   })
-  const [status, setStatus] = useState(lineup?.status || 'draft')
   const [saving, setSaving] = useState(false)
   const [draggedMember, setDraggedMember] = useState(null)
   const [activeSlot, setActiveSlot] = useState(null) // for mobile tap-to-assign
@@ -29,7 +31,7 @@ export default function LineupBuilder({
   const isTemplate = !event
 
   const assignedMemberIds = slots.filter(s => s.memberId).map(s => s.memberId)
-  const availablePlayers = members.filter(m => !assignedMemberIds.includes(m.id))
+  const availablePlayers = members.filter(m => m.active !== false && m.role !== 'coach' && !assignedMemberIds.includes(m.id))
 
   const handleFormationChange = (newFormation) => {
     const newPositions = FORMATIONS[newFormation].positions
@@ -95,15 +97,15 @@ export default function LineupBuilder({
 
   const handleSave = async (publishStatus) => {
     setSaving(true)
-    await onSave({
+    setError('')
+    try { await onSave({
       id: lineup?.id,
       event_id: event?.id || null,
       name: isTemplate ? name : null,
       formation,
       slots,
       status: publishStatus,
-    })
-    setSaving(false)
+    }) } catch (cause) { setError(cause.message) } finally { setSaving(false) }
   }
 
   const getMember = (id) => members.find(m => m.id === id)
@@ -113,7 +115,7 @@ export default function LineupBuilder({
   if (event) {
     eventTitle = event.title
     if (event.type?.toLowerCase() === 'game' && event.opponent) {
-      const prefix = event.home_away === 'home' ? 'vs' : '@'
+      const prefix = event.home_away === 'away' ? '@' : 'vs'
       eventTitle = `${prefix} ${event.opponent}`
     }
   }
@@ -125,9 +127,11 @@ export default function LineupBuilder({
       <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50" onClick={onClose} />
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div
+          ref={modalRef} role="dialog" aria-modal="true" aria-label="Soccer lineup"
           className="bg-white rounded-2xl shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto"
           onClick={e => e.stopPropagation()}
         >
+          {error && <p role="alert" className="p-4 text-red-700 bg-red-50">{error}</p>}
           {/* Header */}
           <div className="flex items-center justify-between p-5 border-b border-gray-100">
             <div className="flex-1 mr-4">
@@ -145,6 +149,7 @@ export default function LineupBuilder({
                   {eventTitle && <p className="text-sm text-gray-500 mt-0.5">{eventTitle}</p>}
                 </>
               )}
+              <p className="mt-1 text-sm font-semibold text-violet-700">{formation}</p>
             </div>
             <div className="flex items-center gap-3">
               {lineup?.status === 'published' && (
@@ -157,7 +162,7 @@ export default function LineupBuilder({
                   Draft
                 </span>
               )}
-              <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+              <button aria-label="Close lineup" onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -323,7 +328,7 @@ export default function LineupBuilder({
                     >
                       {/* Jersey circle */}
                       <div className="relative">
-                        <div
+                        <button type="button" disabled={readOnly} aria-label={`${slot.label}: ${member?.name || 'unassigned'}`}
                           className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold shadow-md border-2 transition-all ${
                             isEmpty
                               ? isActive ? 'bg-white/40 border-white text-white ring-2 ring-white' : 'bg-white/20 border-white/40 text-white/60'
@@ -331,8 +336,8 @@ export default function LineupBuilder({
                           } ${!readOnly && isEmpty ? 'hover:bg-white/30' : ''}`}
                           onClick={!readOnly ? () => handleSlotTap(i) : undefined}
                         >
-                          {member ? (member.jersey_number || member.name.charAt(0)) : '?'}
-                        </div>
+                          {member ? (member.jersey_number ?? member.name.charAt(0)) : '?'}
+                        </button>
                         {/* X button to remove on mobile */}
                         {!readOnly && !isEmpty && isActive && (
                           <button
@@ -356,7 +361,7 @@ export default function LineupBuilder({
 
           {/* Mobile Player Picker */}
           {!readOnly && activeSlot !== null && !slots[activeSlot]?.memberId && (
-            <div className="md:hidden border-t border-gray-100 p-3">
+            <div className="border-t border-gray-100 p-3">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-semibold text-gray-500 uppercase">
                   Select player for {slots[activeSlot]?.label}
@@ -393,7 +398,7 @@ export default function LineupBuilder({
                 </button>
                 {isTemplate && lineup && onDelete && (
                   <button
-                    onClick={() => onDelete(lineup.id)}
+                    disabled={saving} onClick={async () => { if (!window.confirm('Delete this saved lineup?')) return; setSaving(true); try { await onDelete(lineup.id) } catch (cause) { setError(cause.message) } finally { setSaving(false) } }}
                     className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
                   >
                     Delete

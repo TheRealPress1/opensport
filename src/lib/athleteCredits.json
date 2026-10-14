@@ -1,0 +1,156 @@
+{
+  "notice": "Photography and cutout adaptations retain the individual Creative Commons licenses below, separately from OpenSport’s MIT code license. The depicted athletes are sporting inspirations, not endorsers or affiliated users of OpenSport.",
+  "heightNote": "Official profile heights set approximate visual proportions only. Different photographic poses mean this collage is not a literal measurement chart.",
+  "athletes": [
+    {
+      "id": "messi",
+      "name": "Lionel Messi",
+      "sport": "Soccer",
+      "poseScale": 1,
+      "heightCm": 170,
+      "heightSource": "https://www.intermiamicf.com/players/lionel-messi/",
+      "image": "/athletes/messi.webp",
+      "smallImage": "/athletes/messi-small.webp",
+      "width": 310,
+      "height": 858,
+      "smallWidth": 181,
+      "smallHeight": 500,
+      "sourceTitle": "Russia v Argentina - Lionel Messi.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Russia_v_Argentina_-_Lionel_Messi.jpg",
+      "photographer": "Dmitry Sadovnikov",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "licenseFile": "/athletes/licenses/CC-BY-SA-3.0.txt",
+      "derivativeLicense": "CC BY-SA 3.0",
+      "sourceDimensions": {
+        "width": 596,
+        "height": 894
+      },
+      "modifications": "Background removed using local Apple Vision instance mask, excluding the second player. Original source RGB preserved byte-for-byte in intermediate PNG; only alpha added. Cropped to nonzero-alpha bounds, no upscale; small variant downsampled to 500px height. Lossless WebP encoding.",
+      "processing": {
+        "method": "Local Apple Vision foreground-instance segmentation with source RGB preserved; explicitly authorized conventional extraction",
+        "prompt": null
+      }
+    },
+    {
+      "id": "clark",
+      "name": "Caitlin Clark",
+      "sport": "Basketball",
+      "poseScale": 1,
+      "heightCm": 183,
+      "heightSource": "https://www.wnba.com/player/1642286/caitlin-clark",
+      "image": "/athletes/clark.webp",
+      "smallImage": "/athletes/clark-small.webp",
+      "width": 366,
+      "height": 1000,
+      "smallWidth": 183,
+      "smallHeight": 500,
+      "sourceTitle": "2024 Big Ten tournament final - Caitlin Clark 1.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:2024_Big_Ten_tournament_final_-_Caitlin_Clark_1.jpg",
+      "photographer": "John McClellan",
+      "license": "CC BY-SA 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+      "licenseFile": "/athletes/licenses/CC-BY-SA-2.0.txt",
+      "derivativeLicense": "CC BY-SA 2.0",
+      "sourceDimensions": {
+        "width": 2732,
+        "height": 4096
+      },
+      "modifications": "AI-assisted background extraction; transparent padding cropped around alpha>=2 bounds plus2px to omit distant alpha1 noise, preserving retained pixel alpha; downsampled to1000px/500px height; losslessWebP encoding. No missing limbs or feet generated from an incomplete source.",
+      "processing": {
+        "method": "Built-in image_gen",
+        "prompt": "Use case: background-extraction. Edit target: the supplied photograph of Caitlin Clark in white Iowa number 22 basketball uniform. Create a precise photographic cutout of only Caitlin Clark, the central foreground player, on a genuinely transparent background. Remove the crowd, court, background people, and all surroundings. Preserve her exact identity, face, hair, body proportions, pose, expression, kit, lettering, logos, colors, socks and both yellow basketball shoes exactly as photographed. Include the complete visible person from top of hair through both shoes. Do not invent any obscured anatomy, add limbs, replace clothing, change pose, retouch facial appearance, stylize, or add shadows. Keep original photographic texture and natural edge detail. Output one isolated person with real alpha transparency and modest transparent padding."
+      }
+    },
+    {
+      "id": "ohtani",
+      "name": "Shohei Ohtani",
+      "sport": "Baseball",
+      "poseScale": 1,
+      "heightCm": 193,
+      "heightSource": "https://www.mlb.com/player/shohei-ohtani-660271",
+      "image": "/athletes/ohtani.webp",
+      "smallImage": "/athletes/ohtani-small.webp",
+      "width": 371,
+      "height": 1000,
+      "smallWidth": 186,
+      "smallHeight": 500,
+      "sourceTitle": "Shohei Ohtani (51004965041).jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Shohei_Ohtani_(51004965041).jpg",
+      "photographer": "Jeffrey Hayes",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "licenseFile": "/athletes/licenses/CC-BY-2.0.txt",
+      "derivativeLicense": "CC BY 2.0",
+      "sourceDimensions": {
+        "width": 4800,
+        "height": 3200
+      },
+      "modifications": "Background removed using a local Apple Vision foreground-instance mask; original photographic RGB preserved exactly, only alpha added. Mask edge tightened so background-coloured fringe pixels become transparent, and the pitching rubber beside the back cleat removed from the mask. Cropped to the athlete, resized to 1000px/500px height, and WebP encoded. No reconstruction or generated imagery.",
+      "processing": {
+        "method": "Local Apple Vision foreground-instance segmentation + Sharp",
+        "prompt": null
+      }
+    },
+    {
+      "id": "brady",
+      "name": "Tom Brady",
+      "sport": "American football",
+      "poseScale": 1,
+      "heightCm": 193,
+      "heightSource": "https://www.nfl.com/players/tom-brady/",
+      "image": "/athletes/brady.webp",
+      "smallImage": "/athletes/brady-small.webp",
+      "width": 401,
+      "height": 1000,
+      "smallWidth": 201,
+      "smallHeight": 500,
+      "sourceTitle": "Tom Brady 2014.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tom_Brady_2014.jpg",
+      "photographer": "Jeffrey Beall",
+      "license": "CC BY-SA 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+      "licenseFile": "/athletes/licenses/CC-BY-SA-2.0.txt",
+      "derivativeLicense": "CC BY-SA 2.0",
+      "sourceDimensions": {
+        "width": 1000,
+        "height": 1721
+      },
+      "modifications": "Background removed using a local Apple Vision foreground-instance mask; original photographic RGB preserved exactly, only alpha added. Mask edge tightened so background-coloured fringe pixels become transparent. Cropped to the athlete, resized to 1000px/500px height, and WebP encoded. No reconstruction or generated imagery.",
+      "processing": {
+        "method": "Local Apple Vision foreground-instance segmentation + Sharp",
+        "prompt": null
+      }
+    },
+    {
+      "id": "lebron",
+      "name": "LeBron James",
+      "sport": "Basketball",
+      "poseScale": 1,
+      "heightCm": 206,
+      "heightSource": "https://www.nba.com/player/2544/lebron-james",
+      "image": "/athletes/lebron.webp",
+      "smallImage": "/athletes/lebron-small.webp",
+      "width": 467,
+      "height": 1000,
+      "smallWidth": 233,
+      "smallHeight": 500,
+      "sourceTitle": "LeBron James '22.jpg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:LeBron_James_%2722.jpg",
+      "photographer": "Erik Drost",
+      "license": "CC BY 2.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+      "licenseFile": "/athletes/licenses/CC-BY-2.0.txt",
+      "derivativeLicense": "CC BY 2.0",
+      "sourceDimensions": {
+        "width": 5504,
+        "height": 8256
+      },
+      "modifications": "Conventional local background removal using a segmentation alpha mask; original photographic RGB preserved exactly in the intermediate cutout. Cropped to the athlete, trimmed transparent padding, resized, and encoded WebP. Retains only visible original shoe portions; no reconstruction or generated imagery.",
+      "processing": {
+        "method": "Local Apple Vision foreground-instance segmentation + Sharp",
+        "prompt": null
+      }
+    }
+  ]
+}

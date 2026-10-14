@@ -1,6 +1,14 @@
 import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL = 'https://jwsmgbnnffwubtuuxdzw.supabase.co'
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3c21nYm5uZmZ3dWJ0dXV4ZHp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5OTE4MDksImV4cCI6MjA3OTU2NzgwOX0.5az4KVxZHW2P1JOISZIffTTIIu99t_bcofH7btVxPac'
+// The native host serves only the public anonymous key in this configuration.
+// Service-role credentials remain in its main process. Project/demo builds never
+// load this module, even if a runtime configuration happens to be present.
+const runtime = import.meta.env.VITE_APP_MODE === 'team' ? window.__OPENSPORT_CONFIG__ : null
+const SUPABASE_URL = runtime?.supabaseUrl || import.meta.env.VITE_SUPABASE_URL
+const SUPABASE_KEY = runtime?.anonKey || import.meta.env.VITE_SUPABASE_ANON_KEY
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+export const supabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_KEY)
+
+export const supabase = supabaseConfigured
+  ? createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null

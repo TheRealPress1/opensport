@@ -1,0 +1,28 @@
+project_id = "opensport"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+
+[db]
+port = 54322
+major_version = 17
+
+[auth]
+enabled = true
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173/"]
+enable_signup = false
+enable_anonymous_sign_ins = false
+
+[auth.email]
+# Keep the email/password provider enabled; global auth.enable_signup above
+# closes public registration while administrative invites continue to work.
+enable_signup = true
+enable_confirmations = true
+otp_expiry = 3600
+
+[functions.team-admin]
+verify_jwt = false

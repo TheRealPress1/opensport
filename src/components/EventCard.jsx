@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
-import { fmtDate, fmtTime } from '../lib/utils'
+import { useState } from 'react'
+import { useTeamSettings } from '../lib/TeamSettingsContext'
+import { fmtDate, fmtTime, todayInTimezone } from '../lib/utils'
 
 export default function EventCard({
   event,
@@ -13,10 +14,11 @@ export default function EventCard({
   onRsvp,
   onClick,
 }) {
+  const settings = useTeamSettings()
   // Days until event
   let daysLabel = null
   if (!isPast) {
-    const now = new Date()
+    const now = new Date(todayInTimezone(settings.timezone) + 'T00:00:00')
     now.setHours(0, 0, 0, 0)
     const eventDate = new Date(event.date + 'T00:00:00')
     const diffMs = eventDate - now
@@ -25,15 +27,6 @@ export default function EventCard({
     else if (diffDays === 1) daysLabel = 'Tomorrow'
     else daysLabel = `In ${diffDays} days`
   }
-
-  // Type badge colors
-  const typeBadgeStyles = {
-    Game: 'bg-violet-100 text-violet-700',
-    Practice: 'bg-cyan-100 text-cyan-700',
-    Other: 'bg-amber-100 text-amber-700',
-  }
-
-  const typeBg = typeBadgeStyles[event.type] || typeBadgeStyles.Other
 
   // RSVP counts — exclude coaches
   const coachIds = new Set(members.filter(m => m.role === 'coach').map(m => m.id))
@@ -44,7 +37,7 @@ export default function EventCard({
 
   // Determine result display for games (show if score exists, even on same day)
   let resultDisplay = null
-  if (event.type?.toLowerCase() === 'game' && event.team_score !== null && event.opponent_score !== null) {
+  if (settings.scores_enabled && event.type?.toLowerCase() === 'game' && event.team_score !== null && event.opponent_score !== null) {
     const teamScore = event.team_score
     const opponentScore = event.opponent_score
     let resultColor = 'text-amber-600' // draw
@@ -61,27 +54,16 @@ export default function EventCard({
   // Title/Opponent display
   let titleDisplay = event.title
   if (event.type?.toLowerCase() === 'game' && event.opponent) {
-    const prefix = event.home_away === 'home' ? 'vs' : '@'
+    const prefix = event.home_away === 'away' ? '@' : 'vs'
     titleDisplay = `${prefix} ${event.opponent}`
   }
 
   // Members who haven't responded — exclude coaches
   const respondedIds = new Set(rsvps.map(r => r.member_id))
-  const notResponded = !isPast ? members.filter(m => !respondedIds.has(m.id) && m.role !== 'coach') : []
+  const notResponded = !isPast ? members.filter(m => m.active !== false && !respondedIds.has(m.id) && m.role !== 'coach') : []
 
   const [shownName, setShownName] = useState(null)
-  const [excusePopup, setExcusePopup] = useState(null) // 'maybe' | 'cant' | null
 
-  const COACH_WHATSAPP = 'https://wa.me/19788094516?text=Hey%20Coach%2C%20I%20have%20an%20excuse%20for%20'
-
-  const handleExcuseRsvp = (status) => {
-    setExcusePopup(status)
-  }
-
-  const handleWhatsAppClick = () => {
-    onRsvp(event.id, excusePopup)
-    setExcusePopup(null)
-  }
   const handleAvatarTap = (name) => {
     setShownName(name)
     setTimeout(() => setShownName(null), 3000)
@@ -96,6 +78,9 @@ export default function EventCard({
   return (
     <div
       onClick={onClick}
+      role="button" tabIndex={0}
+      aria-label={`View ${event.title}`}
+      onKeyDown={event => { if (event.target === event.currentTarget && ['Enter', ' '].includes(event.key)) { event.preventDefault(); onClick() } }}
       className="bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer p-6 space-y-4"
     >
       {/* Top Row: Today badge and Score */}
@@ -117,8 +102,8 @@ export default function EventCard({
 
       {/* Title + Score */}
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-gray-900">{titleDisplay}</h3>
-        {resultDisplay && <div>{resultDisplay}</div>}
+        <h3 className="min-w-0 break-words text-xl font-semibold text-gray-900">{titleDisplay}</h3>
+        {resultDisplay && <div className="ml-3 shrink-0 whitespace-nowrap">{resultDisplay}</div>}
       </div>
 
       {/* Date, Time, Location */}
@@ -182,7 +167,7 @@ export default function EventCard({
               onClick={e => {
                 e.preventDefault()
                 e.stopPropagation()
-                handleExcuseRsvp('maybe')
+                onRsvp(event.id, 'maybe')
               }}
               className={`py-2 px-2 rounded-lg font-medium text-sm transition-colors text-center ${
                 myRsvp?.status === 'maybe'
@@ -197,7 +182,7 @@ export default function EventCard({
               onClick={e => {
                 e.preventDefault()
                 e.stopPropagation()
-                handleExcuseRsvp('cant')
+                onRsvp(event.id, 'cant')
               }}
               className={`py-2 px-2 rounded-lg font-medium text-sm transition-colors text-center ${
                 myRsvp?.status === 'cant'
@@ -234,14 +219,14 @@ export default function EventCard({
                   <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                   </svg>
-                  Text All
+                  Share reminder
                 </a>
               )
             })()}
           </div>
           <div className="flex flex-wrap gap-1">
             {notResponded.map(m => (
-              <div
+              <button type="button" aria-label={isAdmin && m.phone ? `Contact ${m.name}` : m.name}
                 key={m.id}
                 className="relative group"
                 onClick={() => {
@@ -251,6 +236,8 @@ export default function EventCard({
                     handleAvatarTap(m.name)
                   }
                 }}
+                onFocus={() => setShownName(m.name)}
+                onBlur={() => setShownName(null)}
                 onMouseEnter={() => setShownName(m.name)}
                 onMouseLeave={() => setShownName(null)}
               >
@@ -266,14 +253,14 @@ export default function EventCard({
                     {m.name}
                   </div>
                 )}
-              </div>
+              </button>
             ))}
           </div>
         </div>
       )}
 
       {/* Goals Section (Past Events) */}
-      {isPast && goalScorerNames.length > 0 && (
+      {settings.soccer && isPast && goalScorerNames.length > 0 && (
         <div className="pt-4 border-t border-gray-100">
           <div className="flex flex-wrap gap-2">
             {goalScorerNames.map((name, idx) => (
@@ -295,38 +282,7 @@ export default function EventCard({
         </div>
       )}
 
-      {/* Excuse Popup */}
-      {excusePopup && (
-        <>
-          <div
-            className="fixed inset-0 bg-black/40 z-50"
-            onClick={e => { e.stopPropagation(); setExcusePopup(null) }}
-          />
-          <div className="fixed inset-0 flex items-center justify-center z-50 p-4" onClick={e => e.stopPropagation()}>
-            <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 text-center space-y-4">
-              <div className="text-4xl">📱</div>
-              <h3 className="text-lg font-bold text-gray-900">Got an excuse?</h3>
-              <p className="text-sm text-gray-500">Text Coach Juan to let him know why you can&apos;t make it.</p>
-              <a
-                href={`${COACH_WHATSAPP}${encodeURIComponent(titleDisplay)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={handleWhatsAppClick}
-                className="block w-full py-3 bg-green-500 text-white font-semibold rounded-xl hover:bg-green-600 transition-colors"
-              >
-                Text Coach on WhatsApp
-              </a>
-              <button
-                type="button"
-                onClick={() => setExcusePopup(null)}
-                className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </>
-      )}
+
     </div>
   )
 }

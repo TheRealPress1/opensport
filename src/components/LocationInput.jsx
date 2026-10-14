@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
+import { useTeamSettings } from '../lib/TeamSettingsContext'
 
 const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 
@@ -20,31 +21,24 @@ function loadGoogleMapsScript() {
   return loadPromise
 }
 
-export default function LocationInput({ value, onChange, placeholder, className }) {
-  const [query, setQuery] = useState(value || '')
+export default function LocationInput({ value, onChange, placeholder, className, id = 'location' }) {
+  const { demo } = useTeamSettings()
   const [suggestions, setSuggestions] = useState([])
   const [showSuggestions, setShowSuggestions] = useState(false)
-  const [apiReady, setApiReady] = useState(false)
   const serviceRef = useRef(null)
   const inputRef = useRef(null)
   const wrapperRef = useRef(null)
   const dropdownRef = useRef(null)
 
-  // Sync external value changes
-  useEffect(() => {
-    setQuery(value || '')
-  }, [value])
-
   // Load Google Maps script
   useEffect(() => {
-    if (!GOOGLE_API_KEY) return
+    if (demo || !GOOGLE_API_KEY) return
     loadGoogleMapsScript()
       .then(() => {
         serviceRef.current = new window.google.maps.places.AutocompleteService()
-        setApiReady(true)
       })
       .catch(() => {})
-  }, [])
+  }, [demo])
 
   const [dropdownStyle, setDropdownStyle] = useState({})
 
@@ -92,7 +86,6 @@ export default function LocationInput({ value, onChange, placeholder, className 
 
   const handleInputChange = (e) => {
     const val = e.target.value
-    setQuery(val)
     onChange(val)
     setShowSuggestions(true)
     updatePosition()
@@ -101,19 +94,18 @@ export default function LocationInput({ value, onChange, placeholder, className 
 
   const handleSelect = (suggestion) => {
     const selected = suggestion.description
-    setQuery(selected)
     onChange(selected)
     setSuggestions([])
     setShowSuggestions(false)
   }
 
   // If no API key, just render a plain input
-  if (!GOOGLE_API_KEY) {
+  if (demo || !GOOGLE_API_KEY) {
     return (
       <input
-        type="text"
-        value={query}
-        onChange={(e) => { setQuery(e.target.value); onChange(e.target.value) }}
+        id={id} aria-label="Location" type="text"
+        value={value || ''}
+        onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className={className}
       />
@@ -124,8 +116,8 @@ export default function LocationInput({ value, onChange, placeholder, className 
     <div ref={wrapperRef} className="relative">
       <input
         ref={inputRef}
-        type="text"
-        value={query}
+        id={id} aria-label="Location" type="text"
+        value={value || ''}
         onChange={handleInputChange}
         onFocus={() => { updatePosition(); if (suggestions.length > 0) setShowSuggestions(true) }}
         placeholder={placeholder}

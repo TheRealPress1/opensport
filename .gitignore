@@ -13,6 +13,7 @@ dist-ssr
 *.local
 .env
 .env.*
+!.env.example
 
 # Editor directories and files
 .vscode/*
@@ -25,3 +26,16 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+
+# Local OpenSport runtime, generated releases, and test artifacts
+.opensport*/
+.context/
+public/downloads/
+playwright-report/
+test-results/
+desktop/resources/
+desktop/dist/
+desktop/out/
+
+# Supabase CLI cache
+supabase/.temp/

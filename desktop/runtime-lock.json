@@ -1,0 +1,95 @@
+{
+  "version": "2.120.0",
+  "platform": "darwin",
+  "arch": "arm64",
+  "minimumMacOS": "14.0",
+  "url": "https://github.com/supabase/cli/releases/download/v2.120.0/supabase_2.120.0_darwin_arm64.tar.gz",
+  "sha256": "3b8546cc61aeabab6fd1f68edc7f664ebdfa96bdd6a9b18d8d612708f430ae28",
+  "source": "https://github.com/supabase/cli/releases/tag/v2.120.0",
+  "experimental": true,
+  "localOnly": true,
+  "services": {
+    "postgres": "17.11.0.004-r1",
+    "auth": "v2.197.0-r0",
+    "postgrest": "v16.4-r0",
+    "realtime": "v2.140.10-r0",
+    "storage": "v1.79.36-r0",
+    "edge-runtime": "v1.77.4-r0"
+  },
+  "isolationOverlays": [
+    {
+      "service": "postgres",
+      "version": "17.11.0.004-r1",
+      "file": "bin/supabase-postgres-start",
+      "sha256": "9c3b39b4cca9f0403d0ca4851cba553d705e4ee0ba16bb9d180bcebd2cccbe22",
+      "source": "https://github.com/supabase/slim-services/releases/tag/postgres-17.11.0.004-r1"
+    },
+    {
+      "service": "postgres",
+      "version": "17.11.0.004-r1",
+      "file": "share/supabase-cli/bin/supabase-postgres-init.sh",
+      "sha256": "94a4eae12ac84512ab3bd0458ecfa47712b7c2289427e966a5731831bbd520c9",
+      "source": "https://github.com/supabase/slim-services/releases/tag/postgres-17.11.0.004-r1"
+    },
+    {
+      "service": "postgres",
+      "version": "17.11.0.004-r1",
+      "file": "share/supabase-cli/bin/stage-shared-config.sh",
+      "sha256": "b3498a9360cccceee6beb154f8c07aec9ac495326b725284691ff4eb725222e8",
+      "source": "https://github.com/supabase/slim-services/releases/tag/postgres-17.11.0.004-r1"
+    },
+    {
+      "service": "postgres",
+      "version": "17.11.0.004-r1",
+      "file": "share/supabase-cli/config/pg_hba.conf.template",
+      "sha256": "34da06958b20e0080af90d865aad2a8f93ca94755c6c99dd2d8b8e7405688a9c",
+      "source": "https://github.com/supabase/slim-services/releases/tag/postgres-17.11.0.004-r1"
+    },
+    {
+      "service": "postgrest",
+      "version": "v16.4-r0",
+      "file": "bin/postgrest",
+      "sha256": "5ad4c1b59bfa74dcd9ed37038c18f7ce1b091990e1930fc367b6d77a56463af9",
+      "source": "https://github.com/supabase/slim-services/releases/tag/postgrest-v16.4-r0"
+    },
+    {
+      "service": "storage",
+      "version": "v1.79.36-r0",
+      "file": "bin/storage",
+      "sha256": "02cc98ec465728a1521b6e4351bfd6cb2ef8282e0503ef1f3b40f81457fd4e47",
+      "source": "https://github.com/supabase/slim-services/releases/tag/storage-v1.79.36-r0"
+    },
+    {
+      "service": "edge-runtime",
+      "version": "v1.77.4-r0",
+      "file": "bin/edge-runtime",
+      "sha256": "9524c18de3cea6de81c1b6545e5f02ebaccefaac373547d7a3adc1e41d6554bf",
+      "source": "https://github.com/supabase/slim-services/releases/tag/edge-runtime-v1.77.4-r0"
+    },
+    {
+      "service": "realtime",
+      "version": "v2.140.10-r0",
+      "file": "releases/2.140.10/runtime.exs",
+      "sha256": "b67316a8c4207bf6b37f43911e310d9d8e3afeea479d935bfb29857a89a9d4a2",
+      "source": "https://github.com/supabase/slim-services/releases/tag/realtime-v2.140.10-r0"
+    }
+  ],
+  "sourceBuild": {
+    "buildId": "opensport-native-auth-v1",
+    "commit": "753520fa7202ed5f8b25883a4c0aa7e5e9ad1fc4",
+    "sourceUrl": "https://codeload.github.com/supabase/cli/tar.gz/753520fa7202ed5f8b25883a4c0aa7e5e9ad1fc4",
+    "sourceSha256": "0a73bba662f13b05a7166b28d84483c94727b01f6cba8a17ba1533c6961f47a8",
+    "patch": "desktop/patches/supabase-cli-2.120.0-opensport-auth.patch",
+    "patchSha256": "716bc905c1022ab2a13b71d5361dc0be095d70c463efa8d6bac16bb96c0f5314",
+    "bun": {
+      "version": "1.4.2",
+      "url": "https://github.com/oven-sh/bun/releases/download/bun-v1.4.2/bun-darwin-aarch64.zip",
+      "sha256": "90987a3a16d7db556d886ac3d551e7b6d3edf0a1cf43acaed622e8676be1d12f"
+    },
+    "pnpm": {
+      "version": "12.8.1",
+      "url": "https://registry.npmjs.org/@pnpm/exe.darwin-arm64/-/exe.darwin-arm64-12.8.1.tgz",
+      "sha256": "5d09b44f26701d203826c642202364a47ce517e6215262c4dac54af51cdae88e"
+    }
+  }
+}

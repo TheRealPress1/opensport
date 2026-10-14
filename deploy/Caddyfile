@@ -1,0 +1,31 @@
+{
+	admin off
+}
+
+{$CADDY_SITE} {
+	encode zstd gzip
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		X-Frame-Options DENY
+	}
+	# Publish only the app APIs: never Studio, SQL, metrics, or gateway admin routes.
+	@api path /api/auth/v1/* /api/rest/v1/* /api/storage/v1/* /api/functions/v1/* /api/realtime/v1/*
+	handle @api {
+		uri strip_prefix /api
+		reverse_proxy api-gw:8000
+	}
+	handle /api/* {
+		respond "Not found" 404
+	}
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}
+
+# Container-only health endpoint, not published by Compose.
+:8081 {
+	respond /health "ok" 200
+}

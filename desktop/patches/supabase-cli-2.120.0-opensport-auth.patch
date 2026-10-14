@@ -1,0 +1,65 @@
+--- a/packages/stack/src/services/Database.ts
++++ b/packages/stack/src/services/Database.ts
+@@ -107,7 +107,7 @@
+ });
+ 
+-// Health reconciles role passwords as supabase_admin, including after a configured password change.
+-const NATIVE_HBA_RULES = "local all supabase_admin trust\nlocal all all scram-sha-256\n";
++// OpenSport: require credentials before the first native connection.
++const NATIVE_HBA_RULES = "local all all scram-sha-256\n";
+ 
+ export interface DatabaseConfig extends Schema.Schema.Type<typeof DatabaseConfig> {}
+ 
+--- a/apps/cli/src/main.ts
++++ b/apps/cli/src/main.ts
+@@ -4,7 +4,11 @@
+   runNativeProcessIfDispatched,
+ } from "@supabase/stack/internal/dispatch";
+ 
++// Immutable OpenSport source-build identity; no environment-controlled branding.
++declare const OPENSPORT_NATIVE_BUILD_INFO: string;
+ const argv = process.argv.slice(2);
+-if (!(await runHostProcessIfDispatched(argv)) && !(await runNativeProcessIfDispatched(argv))) {
++if (argv.length === 1 && argv[0] === "--opensport-build-info") {
++  console.log(OPENSPORT_NATIVE_BUILD_INFO);
++} else if (!(await runHostProcessIfDispatched(argv)) && !(await runNativeProcessIfDispatched(argv))) {
+   await import("./cli/main.ts");
+ }
+--- a/apps/cli/src/command-internal/stack-config.ts
++++ b/apps/cli/src/command-internal/stack-config.ts
+@@ -1247,7 +1247,24 @@
+       const createCreations = (
+         stackId: string,
+       ): Effect.Effect<ReadonlyArray<ServiceCreationType>, StackConfigError> =>
+-        Effect.sync(() => {
++        Effect.gen(function* () {
++          // OpenSport generates and retains these secrets outside project config.
++          // Validate only when creating the composition; stop/status need no secrets.
++          const databasePassword = process.env.OPENSPORT_NATIVE_DATABASE_PASSWORD;
++          const postgresRootKey = process.env.OPENSPORT_NATIVE_POSTGRES_ROOT_KEY;
++          for (const [name, value] of [
++            ["OPENSPORT_NATIVE_DATABASE_PASSWORD", databasePassword],
++            ["OPENSPORT_NATIVE_POSTGRES_ROOT_KEY", postgresRootKey],
++          ] as const) {
++            if (value === undefined || !/^[a-f0-9]{64}$/.test(value))
++              return yield* new StackConfigError({
++                message: `${name} must be a generated 64-character lowercase hex secret`,
++              });
++          }
++          if (rootKey !== undefined && rootKey !== postgresRootKey)
++            return yield* new StackConfigError({
++              message: "Configured database root key conflicts with OpenSport's saved key",
++            });
+           return [
+             {
+               service: "database",
+@@ -1257,7 +1274,8 @@
+                 jwtExpiry: validatedConfig.auth.jwt_expiry,
+                 settings: validatedConfig.db.settings,
+                 healthTimeoutMs,
+-                ...(rootKey === undefined ? {} : { rootKey: Redacted.make(rootKey) }),
++                databasePassword: Redacted.make(databasePassword!),
++                rootKey: Redacted.make(postgresRootKey!),
+               },
+               endpoints: { sql: endpoint(dbPort) },
+             },

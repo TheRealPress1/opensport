@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useTeamSettings } from '../lib/TeamSettingsContext'
 import LocationInput from './LocationInput';
+import { useModal } from '../lib/useModal'
 
 export default function AddEvent({ onSubmit, onClose }) {
+  const ACTIVE_TEAM = useTeamSettings()
+  const modalRef = useModal(onClose)
+  const [error, setError] = useState('')
+  const [saving, setSaving] = useState(false)
   const [type, setType] = useState('game');
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
@@ -12,16 +18,16 @@ export default function AddEvent({ onSubmit, onClose }) {
   const [home_away, setHome_away] = useState('home');
   const [notes, setNotes] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !date) {
-      alert('Please fill in title and date');
+    if (!title.trim() || !date) {
+      setError('Please fill in title and date');
       return;
     }
 
     const eventData = {
       type,
-      title,
+      title: title.trim(),
       date,
       time,
       end_time,
@@ -31,18 +37,8 @@ export default function AddEvent({ onSubmit, onClose }) {
       notes,
     };
 
-    onSubmit(eventData);
-
-    // Reset form
-    setType('game');
-    setTitle('');
-    setDate('');
-    setTime('');
-    setEnd_time('');
-    setLocation('');
-    setOpponent('');
-    setHome_away('home');
-    setNotes('');
+    setSaving(true); setError('')
+    try { await onSubmit(eventData) } catch (cause) { setError(cause.message) } finally { setSaving(false) }
   };
 
   const eventTypes = [
@@ -53,11 +49,11 @@ export default function AddEvent({ onSubmit, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-lg w-full mx-4">
+      <div ref={modalRef} role="dialog" aria-modal="true" aria-label="New event" className="bg-white rounded-lg shadow-xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900">New Event</h2>
-          <button
+          <button aria-label="Close event form"
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 transition text-xl"
           >
@@ -66,6 +62,7 @@ export default function AddEvent({ onSubmit, onClose }) {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          {error && <p role="alert" className="text-red-700 bg-red-50 p-3 rounded-lg">{error}</p>}
           {/* Event Type Selector */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -107,7 +104,7 @@ export default function AddEvent({ onSubmit, onClose }) {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g., vs Manchester United"
+              placeholder="e.g., Saturday game"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition"
             />
           </div>
@@ -162,7 +159,7 @@ export default function AddEvent({ onSubmit, onClose }) {
             <LocationInput
               value={location}
               onChange={setLocation}
-              placeholder="e.g., Babson Field"
+              placeholder={`e.g., ${ACTIVE_TEAM.homeScoreLabel} Field`}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition"
             />
           </div>
@@ -179,7 +176,7 @@ export default function AddEvent({ onSubmit, onClose }) {
                   type="text"
                   value={opponent}
                   onChange={(e) => setOpponent(e.target.value)}
-                  placeholder="e.g., Manchester United"
+                  placeholder="Opponent name"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition"
                 />
               </div>
@@ -228,9 +225,10 @@ export default function AddEvent({ onSubmit, onClose }) {
             </button>
             <button
               type="submit"
+              disabled={saving}
               className="flex-1 px-4 py-2 bg-violet-600 text-white font-medium rounded-lg hover:bg-violet-700 transition"
             >
-              Create Event
+              {saving ? 'Creating…' : 'Create Event'}
             </button>
           </div>
         </form>

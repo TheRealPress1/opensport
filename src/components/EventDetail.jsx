@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
+import { useTeamSettings } from '../lib/TeamSettingsContext'
 import { fmtDateLong, fmtTime } from '../lib/utils'
 import LocationInput from './LocationInput'
+import { useModal } from '../lib/useModal'
 
 export default function EventDetail({
   event,
@@ -21,6 +23,9 @@ export default function EventDetail({
   lineup,
   onSetRsvpForMember,
 }) {
+  const settings = useTeamSettings()
+  const modalRef = useModal(onClose)
+  const [error, setError] = useState('')
   const [editing, setEditing] = useState(false)
   const [adminRsvpMenu, setAdminRsvpMenu] = useState(null) // { memberId, currentStatus }
   const [editTitle, setEditTitle] = useState(event.title || '')
@@ -31,12 +36,7 @@ export default function EventDetail({
   const [editNotes, setEditNotes] = useState(event.notes || '')
   const [editOpponent, setEditOpponent] = useState(event.opponent || '')
   const [editHomeAway, setEditHomeAway] = useState(event.home_away || 'home')
-  const [editTeamScore, setEditTeamScore] = useState(event.team_score?.toString() || '')
-  const [editOppScore, setEditOppScore] = useState(event.opponent_score?.toString() || '')
   const [saving, setSaving] = useState(false)
-  const [excusePopup, setExcusePopup] = useState(null)
-
-  const COACH_WHATSAPP = 'https://wa.me/19788094516?text=Hey%20Coach%2C%20I%20have%20an%20excuse%20for%20'
 
   // RSVP counts and grouping
   const goingRsvps = rsvps.filter(r => r.status === 'going')
@@ -52,7 +52,7 @@ export default function EventDetail({
 
   // Result display
   let resultLabel = null
-  if (event.team_score !== null && event.opponent_score !== null) {
+  if (settings.scores_enabled && event.team_score !== null && event.opponent_score !== null) {
     const ts = event.team_score
     const os = event.opponent_score
     if (ts > os) resultLabel = 'WIN'
@@ -77,7 +77,7 @@ export default function EventDetail({
   let mainTitle = event.title
   let subtitle = null
   if (event.type?.toLowerCase() === 'game' && event.opponent) {
-    const prefix = event.home_away === 'home' ? 'vs' : '@'
+    const prefix = event.home_away === 'away' ? '@' : 'vs'
     mainTitle = `${prefix} ${event.opponent}`
     if (event.title && event.title !== mainTitle) {
       subtitle = event.title
@@ -91,20 +91,29 @@ export default function EventDetail({
       date: editDate,
       time: editTime || null,
       end_time: editEndTime || null,
-      location: editLocation || null,
-      notes: editNotes || null,
+      location: editLocation || '',
+      notes: editNotes || '',
     }
     if (event.type?.toLowerCase() === 'game') {
       updates.opponent = editOpponent || null
       updates.home_away = editHomeAway
-      if (isPast && editTeamScore !== '' && editOppScore !== '') {
-        updates.team_score = parseInt(editTeamScore)
-        updates.opponent_score = parseInt(editOppScore)
-      }
+
     }
-    await onUpdateEvent(event.id, updates)
-    setSaving(false)
-    setEditing(false)
+    setError('')
+    try {
+      if (!editTitle.trim() || !editDate) throw new Error('Title and date are required.')
+      await onUpdateEvent(event.id, updates)
+      setEditing(false)
+    } catch (cause) { setError(cause.message) } finally { setSaving(false) }
+  }
+
+  const changeRsvp = async (status, memberId = null) => {
+    setError('')
+    try {
+      if (memberId) await onSetRsvpForMember(event.id, memberId, status)
+      else await onRsvp(event.id, status)
+      setAdminRsvpMenu(null)
+    } catch (cause) { setError(cause.message) }
   }
 
   const inputClass = "w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
@@ -120,6 +129,7 @@ export default function EventDetail({
       {/* Modal Card */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
         <div
+          ref={modalRef} role="dialog" aria-modal="true" aria-label="Event details"
           className="bg-white rounded-2xl shadow-lg max-w-lg w-full max-h-[90vh] overflow-y-auto"
           onClick={e => e.stopPropagation()}
         >
@@ -128,7 +138,7 @@ export default function EventDetail({
             <div className="flex-1">
               {editing ? (
                 <input
-                  type="text"
+                  aria-label="Title" type="text"
                   value={editTitle}
                   onChange={e => setEditTitle(e.target.value)}
                   className={`${inputClass} text-xl font-bold`}
@@ -154,7 +164,7 @@ export default function EventDetail({
                   </svg>
                 </button>
               )}
-              <button
+              <button aria-label="Close event details"
                 onClick={onClose}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
@@ -167,21 +177,22 @@ export default function EventDetail({
 
           {/* Content */}
           <div className="p-6 space-y-6">
+            {error && <p role="alert" className="text-red-700 bg-red-50 p-3 rounded-lg">{error}</p>}
             {editing ? (
               /* Edit Mode */
               <div className="space-y-4">
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">Date</label>
-                  <input type="date" value={editDate} onChange={e => setEditDate(e.target.value)} className={inputClass} />
+                  <input aria-label="Date" type="date" value={editDate} onChange={e => setEditDate(e.target.value)} className={inputClass} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-semibold text-gray-500 mb-1">Start Time</label>
-                    <input type="time" value={editTime} onChange={e => setEditTime(e.target.value)} className={inputClass} />
+                    <input aria-label="Start time" type="time" value={editTime} onChange={e => setEditTime(e.target.value)} className={inputClass} />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-gray-500 mb-1">End Time</label>
-                    <input type="time" value={editEndTime} onChange={e => setEditEndTime(e.target.value)} className={inputClass} />
+                    <input aria-label="End time" type="time" value={editEndTime} onChange={e => setEditEndTime(e.target.value)} className={inputClass} />
                   </div>
                 </div>
                 <div>
@@ -198,31 +209,23 @@ export default function EventDetail({
                   <>
                     <div>
                       <label className="block text-xs font-semibold text-gray-500 mb-1">Opponent</label>
-                      <input type="text" value={editOpponent} onChange={e => setEditOpponent(e.target.value)} className={inputClass} />
+                      <input aria-label="Opponent" type="text" value={editOpponent} onChange={e => setEditOpponent(e.target.value)} className={inputClass} />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-gray-500 mb-1">Home / Away</label>
-                      <select value={editHomeAway} onChange={e => setEditHomeAway(e.target.value)} className={inputClass}>
+                      <select aria-label="Home or away" value={editHomeAway} onChange={e => setEditHomeAway(e.target.value)} className={inputClass}>
                         <option value="home">Home</option>
                         <option value="away">Away</option>
                         <option value="neutral">Neutral</option>
                       </select>
                     </div>
-                    {isPast && (
-                      <div>
-                        <label className="block text-xs font-semibold text-gray-500 mb-1">Score</label>
-                        <div className="grid grid-cols-2 gap-3">
-                          <input type="number" value={editTeamScore} onChange={e => setEditTeamScore(e.target.value)} placeholder="Team" min="0" className={inputClass} />
-                          <input type="number" value={editOppScore} onChange={e => setEditOppScore(e.target.value)} placeholder="Opponent" min="0" className={inputClass} />
-                        </div>
-                      </div>
-                    )}
+
                   </>
                 )}
 
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1">Notes</label>
-                  <textarea value={editNotes} onChange={e => setEditNotes(e.target.value)} rows={3} className={`${inputClass} resize-none`} />
+                  <textarea aria-label="Notes" value={editNotes} onChange={e => setEditNotes(e.target.value)} rows={3} className={`${inputClass} resize-none`} />
                 </div>
               </div>
             ) : (
@@ -235,7 +238,7 @@ export default function EventDetail({
                   </div>
                   <div className="flex items-center gap-3 text-gray-700">
                     <span>
-                      {fmtTime(event.time)}
+                      {fmtTime(event.time)} {event.time && settings.timezone}
                       {event.end_time && ` - ${fmtTime(event.end_time)}`}
                     </span>
                   </div>
@@ -265,7 +268,7 @@ export default function EventDetail({
                 )}
 
                 {/* Result Display (Past Games with Score) */}
-                {isPast && event.type?.toLowerCase() === 'game' && event.team_score !== null && event.opponent_score !== null && (
+                {settings.scores_enabled && event.type?.toLowerCase() === 'game' && event.team_score !== null && event.opponent_score !== null && (
                   <div className="bg-gray-50 rounded-xl p-4">
                     <div className="flex items-center justify-between mb-4">
                       <div className="text-4xl font-bold text-gray-900">
@@ -276,7 +279,7 @@ export default function EventDetail({
                       </div>
                     </div>
 
-                    {goalDetails.length > 0 && (
+                    {settings.soccer && goalDetails.length > 0 && (
                       <div className="space-y-2">
                         <div className="text-xs font-semibold text-gray-500 uppercase">Goal Scorers</div>
                         <div className="space-y-2">
@@ -304,7 +307,7 @@ export default function EventDetail({
                     <div className="flex gap-3">
                       <button
                         type="button"
-                        onClick={() => onRsvp(event.id, 'going')}
+                        onClick={() => changeRsvp('going')}
                         className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-colors ${
                           myRsvp?.status === 'going'
                             ? 'bg-green-600 text-white'
@@ -315,7 +318,7 @@ export default function EventDetail({
                       </button>
                       <button
                         type="button"
-                        onClick={() => setExcusePopup('maybe')}
+                        onClick={() => changeRsvp('maybe')}
                         className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-colors ${
                           myRsvp?.status === 'maybe'
                             ? 'bg-amber-500 text-white'
@@ -326,7 +329,7 @@ export default function EventDetail({
                       </button>
                       <button
                         type="button"
-                        onClick={() => setExcusePopup('cant')}
+                        onClick={() => changeRsvp('cant')}
                         className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-colors ${
                           myRsvp?.status === 'cant'
                             ? 'bg-red-600 text-white'
@@ -375,19 +378,19 @@ export default function EventDetail({
                               {isAdmin && isMenuOpen && (
                                 <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-30 w-44 overflow-hidden">
                                   {group.status !== 'going' && (
-                                    <button type="button" onClick={() => { onSetRsvpForMember(event.id, rsvp.member_id, 'going'); setAdminRsvpMenu(null) }}
+                                    <button type="button" onClick={() => changeRsvp('going', rsvp.member_id)}
                                       className="w-full text-left px-3 py-2 text-sm hover:bg-green-50 text-green-700">
                                       Move to Going
                                     </button>
                                   )}
                                   {group.status !== 'maybe' && (
-                                    <button type="button" onClick={() => { onSetRsvpForMember(event.id, rsvp.member_id, 'maybe'); setAdminRsvpMenu(null) }}
+                                    <button type="button" onClick={() => changeRsvp('maybe', rsvp.member_id)}
                                       className="w-full text-left px-3 py-2 text-sm hover:bg-amber-50 text-amber-700">
                                       Move to Maybe
                                     </button>
                                   )}
                                   {group.status !== 'cant' && (
-                                    <button type="button" onClick={() => { onSetRsvpForMember(event.id, rsvp.member_id, 'cant'); setAdminRsvpMenu(null) }}
+                                    <button type="button" onClick={() => changeRsvp('cant', rsvp.member_id)}
                                       className="w-full text-left px-3 py-2 text-sm hover:bg-red-50 text-red-700">
                                       Move to Can&apos;t Go
                                     </button>
@@ -428,7 +431,7 @@ export default function EventDetail({
                   {saving ? 'Saving...' : 'Save Changes'}
                 </button>
                 <button
-                  onClick={() => onDelete(event.id)}
+                  disabled={saving} onClick={async () => { if (!window.confirm('Delete this event and its RSVPs/results?')) return; setSaving(true); try { await onDelete(event.id) } catch (cause) { setError(cause.message) } finally { setSaving(false) } }}
                   className="py-2 px-4 text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
                 >
                   Delete
@@ -437,11 +440,11 @@ export default function EventDetail({
             ) : (
               <>
                 {/* Calendar Row */}
-                <div className="flex items-center justify-between">
+                {!settings.demo && <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-gray-700">Add to Calendar</span>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={onGoogleCal}
+                      onClick={() => { try { onGoogleCal() } catch (cause) { setError(cause.message) } }}
                       className="p-2 rounded-lg transition-colors hover:bg-gray-200"
                       title="Google Calendar"
                     >
@@ -458,7 +461,7 @@ export default function EventDetail({
                       </svg>
                     </button>
                     <button
-                      onClick={onOutlookCal}
+                      onClick={() => { try { onOutlookCal() } catch (cause) { setError(cause.message) } }}
                       className="p-2 rounded-lg transition-colors hover:bg-gray-200"
                       title="Outlook Calendar"
                     >
@@ -472,10 +475,11 @@ export default function EventDetail({
                       </svg>
                     </button>
                   </div>
-                </div>
+                </div>}
+                {!settings.demo && settings.organizer_whatsapp && <a href={`https://wa.me/${settings.organizer_whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="block text-sm text-green-700 underline">Contact {settings.organizer_name || 'organizer'} on WhatsApp</a>}
 
                 {/* Admin Actions */}
-                {isAdmin && event.type?.toLowerCase() === 'game' && (
+                {settings.scores_enabled && isAdmin && event.type?.toLowerCase() === 'game' && (
                   <div className="flex items-center gap-3">
                     <button
                       type="button"
@@ -488,7 +492,7 @@ export default function EventDetail({
                 )}
 
                 {/* Lineup Button */}
-                {event.type?.toLowerCase() === 'game' && (lineup?.status === 'published' || isAdmin) && (
+                {settings.soccer && event.type?.toLowerCase() === 'game' && (lineup?.status === 'published' || isAdmin) && (
                   <div>
                     <button
                       onClick={onLineup}
@@ -510,38 +514,7 @@ export default function EventDetail({
           </div>
         </div>
       </div>
-      {/* Excuse Popup */}
-      {excusePopup && (
-        <>
-          <div
-            className="fixed inset-0 bg-black/40 z-[60]"
-            onClick={() => setExcusePopup(null)}
-          />
-          <div className="fixed inset-0 flex items-center justify-center z-[60] p-4">
-            <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 text-center space-y-4" onClick={e => e.stopPropagation()}>
-              <div className="text-4xl">📱</div>
-              <h3 className="text-lg font-bold text-gray-900">Got an excuse?</h3>
-              <p className="text-sm text-gray-500">Text Coach Juan to let him know why you can&apos;t make it.</p>
-              <a
-                href={`${COACH_WHATSAPP}${encodeURIComponent(mainTitle)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => { onRsvp(event.id, excusePopup); setExcusePopup(null) }}
-                className="block w-full py-3 bg-green-500 text-white font-semibold rounded-xl hover:bg-green-600 transition-colors"
-              >
-                Text Coach on WhatsApp
-              </a>
-              <button
-                type="button"
-                onClick={() => setExcusePopup(null)}
-                className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </>
-      )}
+
     </>
   )
 }

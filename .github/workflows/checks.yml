@@ -1,0 +1,68 @@
+name: OpenSport checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run check
+      - run: npm run test:desktop:ui
+      - uses: actions/upload-artifact@v4
+        with:
+          name: opensport-0.1.0-candidate
+          path: public/downloads/
+  database:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash supabase/tests/run.sh
+  functions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: deno check supabase/functions/main/index.ts
+      - run: deno test --allow-env supabase/tests/handler.test.ts
+  installation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Prepare a clean source download
+        run: |
+          node scripts/prepare-release.mjs
+          unzip -q public/downloads/opensport-0.1.0-source.zip -d "$RUNNER_TEMP/opensport-release"
+      - run: npm ci
+        working-directory: ${{ runner.temp }}/opensport-release/opensport-0.1.0
+      - run: npx playwright install --with-deps chromium
+        working-directory: ${{ runner.temp }}/opensport-release/opensport-0.1.0
+      - name: Verify pinned installation, live workflows, and backup restoration
+        run: node scripts/ops-acceptance.mjs
+        working-directory: ${{ runner.temp }}/opensport-release/opensport-0.1.0
+        env:
+          OPENSPORT_ACCEPTANCE_TLS: '1'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: installation-browser-traces
+          path: ${{ runner.temp }}/opensport-release/opensport-0.1.0/test-results/
+          retention-days: 3
