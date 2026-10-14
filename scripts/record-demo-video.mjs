@@ -90,7 +90,8 @@ cdp.on('Page.screencastFrame', ({ data, metadata, sessionId }) => {
 })
 await studio('card', '<small>OPENSPORT</small><h1>Your team’s home.</h1><p>The free, open-source alternative to <b>TeamSnap</b>.</p>')
 await wait(600)
-await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 92, maxWidth: 2560, maxHeight: 1440 })
+// Lossless 2x frames keep small UI text sharp; the videos are encoded at the same 1440p size.
+await cdp.send('Page.startScreencast', { format: 'png', maxWidth: 2560, maxHeight: 1440 })
 mark('start')
 await wait(2300)
 await studio('hideCard')
@@ -156,23 +157,23 @@ async function encode(name, from, to, codecArgs) {
   await mkdir(dir)
   const list = []
   for (const [index, frame] of selected.entries()) {
-    const file = path.join(dir, `${String(index).padStart(5, '0')}.jpg`)
+    const file = path.join(dir, `${String(index).padStart(5, '0')}.png`)
     await writeFile(file, Buffer.from(frame.data, 'base64'))
     const next = selected[index + 1]?.time ?? to
     list.push(`file '${file}'`, `duration ${Math.max(0.001, next - Math.max(frame.time, from)).toFixed(4)}`)
   }
-  list.push(`file '${path.join(dir, `${String(selected.length - 1).padStart(5, '0')}.jpg`)}'`)
+  list.push(`file '${path.join(dir, `${String(selected.length - 1).padStart(5, '0')}.png`)}'`)
   await writeFile(path.join(dir, 'frames.txt'), list.join('\n'))
   for (const [extension, args] of codecArgs) {
-    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', path.join(dir, 'frames.txt'), '-vf', 'fps=30,scale=1920:1080:flags=lanczos,format=yuv420p', ...args, '-an', path.join(output, `${name}.${extension}`)])
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', path.join(dir, 'frames.txt'), '-vf', 'fps=30,scale=2560:1440:flags=lanczos,format=yuv420p', ...args, '-an', path.join(output, `${name}.${extension}`)])
   }
   return selected.length
 }
 await mkdir(output, { recursive: true })
-const h264 = ['-c:v', 'libx264', '-preset', 'slow', '-crf', '22', '-movflags', '+faststart']
-const vp9 = ['-c:v', 'libvpx-vp9', '-b:v', '0', '-crf', '36', '-row-mt', '1']
+const h264 = ['-c:v', 'libx264', '-preset', 'slow', '-crf', '18', '-tune', 'animation', '-movflags', '+faststart']
+const vp9 = ['-c:v', 'libvpx-vp9', '-b:v', '0', '-crf', '30', '-tune-content', 'screen', '-deadline', 'good', '-cpu-used', '2', '-row-mt', '1']
 const fullFrames = await encode('opensport-walkthrough', marks.start, marks.end, [['mp4', h264]])
 const loopFrames = await encode('opensport-demo', marks.loopStart, marks.loopEnd, [['mp4', h264], ['webm', vp9]])
-execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '0.3', '-i', path.join(output, 'opensport-demo.mp4'), '-frames:v', '1', '-vf', 'scale=1280:720', '-q:v', '3', path.resolve('public/images/demo-walkthrough-poster.jpg')])
+execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '0.3', '-i', path.join(output, 'opensport-demo.mp4'), '-frames:v', '1', '-vf', 'scale=1920:1080:flags=lanczos', '-q:v', '2', path.resolve('public/images/demo-walkthrough-poster.jpg')])
 await rm(work, { recursive: true, force: true })
 console.log(JSON.stringify({ fullFrames, loopFrames, seconds: { full: +(marks.end - marks.start).toFixed(1), loop: +(marks.loopEnd - marks.loopStart).toFixed(1) } }))
