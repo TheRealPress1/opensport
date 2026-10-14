@@ -29,7 +29,6 @@ const comparison = [
 export default function LandingPage() {
   return (
     <div className="project-site">
-      <a className="os-skip" href="#main">Skip to content</a>
       <header className="os-nav os-container">
         <a className="os-wordmark" href="#" aria-label="OpenSport home"><SportMark />OpenSport<span className="os-wordmark-period">.</span></a>
         <nav aria-label="Main navigation">
@@ -39,7 +38,7 @@ export default function LandingPage() {
           <a className="os-github" href={REPOSITORY_URL} target="_blank" rel="noreferrer" aria-label="View OpenSport on GitHub"><GitHubIcon /><span>GitHub</span><Arrow /></a>
         </nav>
       </header>
-      <main id="main" tabIndex={-1}>
+      <main id="main">
         <section className="os-hero os-container" aria-labelledby="hero-heading">
           <h1 id="hero-heading">Behind every great athlete{' '}<br /><span>is a team.</span></h1>
           <p className="os-hero-alternative">The free, open-source alternative to <strong>TeamSnap</strong>.</p>
