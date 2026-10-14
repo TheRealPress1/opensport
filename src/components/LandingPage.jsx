@@ -60,11 +60,7 @@ export default function LandingPage() {
         <div className="os-principles" aria-label="Project principles"><span>ANY SPORT.</span><i aria-hidden="true">✳</i><span>YOUR TEAM.</span><i aria-hidden="true">✳</i><span>YOUR DATA.</span><i aria-hidden="true">✳</i><span>OPEN TO EVERYONE.</span></div>
         <section className="os-product os-container" id="features" aria-labelledby="product-heading">
           <div className="os-section-heading"><div><p className="os-eyebrow">01 / THE EVERYDAY ESSENTIALS</p><h2 id="product-heading">Less chasing.<br />More playing.</h2></div><div className="os-section-aside"><p>The group chat can only do so much. Give your team one place to find the plan, say they’re in, and get ready for game day.</p><a className="os-text-link" href="/#/demo">Meet your demo team <Arrow /></a></div></div>
-          <figure className="os-product-preview">
-            <div className="os-browser-bar" aria-hidden="true"><span className="os-browser-dots"><i /><i /><i /></span><span>YOUR TEAM’S HOME</span><span>OPENSPORT ↗</span></div>
-            <ProductVideo />
-            <figcaption><span><span className="os-demo-dot" /> FICTIONAL TEAM. REAL OPENSPORT.</span><span>No account needed. Changes reset on refresh.</span></figcaption>
-          </figure>
+          <figure className="os-product-preview"><ProductVideo /></figure>
           <div className="os-features">
             <Feature number="01" title="A plan everyone can find." description="Matches, practices, locations, and calendar exports. Your whole week, in one place." detail="SCHEDULE + CALENDAR" />
             <Feature number="02" title="Know who’s showing up." description="A shared roster and simple going, maybe, or can’t-make-it RSVPs. Fewer loose ends before game day." detail="ROSTER + RSVPs" />
