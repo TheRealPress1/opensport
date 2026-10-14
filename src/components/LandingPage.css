@@ -6,8 +6,6 @@
 .project-site h3 { letter-spacing: -.035em; }
 .project-site p { text-wrap: pretty; }
 .project-site .os-container { width: min(1440px, 100%); margin-inline: auto; padding-inline: 5%; }
-.project-site .os-skip { position: fixed; left: 16px; top: -100px; z-index: 100; padding: 14px 20px; color: white; background: var(--ink); }
-.project-site .os-skip:focus { top: 12px; }
 .project-site .os-nav { min-height: 92px; display: flex; align-items: center; gap: 30px; border-bottom: 1px solid var(--line); }
 .project-site .os-wordmark { display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: 29px; letter-spacing: -1.5px; white-space: nowrap; }
 .project-site .os-wordmark svg { width: 34px; height: 34px; margin-right: 3px; color: var(--green); }
