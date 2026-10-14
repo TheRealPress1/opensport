@@ -1,9 +1,18 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { DOWNLOAD_URL, RELEASE_VERSION, REPOSITORY_URL, SETUP_URL } from '../lib/project'
 import { athletes, photoCreditsUrl } from '../lib/athletes'
 import licenseUrl from '../../LICENSE?url&no-inline'
 import contributionUrl from '../../CONTRIBUTING.md?url&no-inline'
 import './LandingPage.css'
+
+// Personal photos for the story slideshow, cropped to 3:2. Not covered by the MIT license.
+const storyPhotos = [
+  { src: '/images/story/ghsa-champions.webp', width: 840, height: 560, alt: 'Me holding the Georgia High School Association boys soccer trophy, wearing a 2022 champions shirt.' },
+  { src: '/images/story/buckhead-youth.webp', width: 615, height: 410, alt: 'A youth team in blue Buckhead jerseys posing with their coach.' },
+  { src: '/images/story/white-kit.webp', width: 1086, height: 724, alt: 'Two players in white kits high-fiving during a game.' },
+  { src: '/images/story/blue-kit.webp', width: 1078, height: 719, alt: 'Two players in blue jerseys celebrating on a floodlit field at night.' },
+  { src: '/images/story/babson-team.webp', width: 1024, height: 683, alt: 'Babson soccer teammates on a turf field, one holding up a number 17 jersey.' },
+]
 
 // TeamSnap claims are sourced in the comparison note; re-check them before each release.
 const comparison = [
@@ -73,8 +82,8 @@ export default function LandingPage() {
         </section>
         <section className="os-story" id="story" aria-labelledby="story-heading">
           <div className="os-container os-story-layout">
-            <div className="os-story-heading"><p className="os-eyebrow">03 / FROM PLAYER TO BUILDER</p><h2 id="story-heading">A lifelong game.<br />A simple idea.</h2><div className="os-story-moments"><div className="os-story-number" aria-hidden="true">03<span>YEARS OLD WHEN<br />IT ALL STARTED.</span></div><figure className="os-story-photo"><img src="/images/story-champions.webp" width="510" height="680" alt="Me holding the Georgia High School Association boys soccer trophy, wearing a 2022 champions shirt." loading="lazy" decoding="async" /><figcaption>GHSA champions · 2022</figcaption></figure></div></div>
-            <div className="os-story-copy"><p className="os-story-lead">I’ve played soccer since I was three. Every team I was on used TeamSnap to organize and let family and friends follow along.</p><p>When I became captain of my college soccer team, I realized how critical team organization was—and how expensive it could be to use TeamSnap for a whole team.</p><p>So I built OpenSport, an independent, open-source alternative to TeamSnap. A way for sports teams to organize themselves, keep things simple, and make more room for the joy of playing.</p><p className="os-story-signature"><SportMark /> Built by a player. Open to every team.</p></div>
+            <div className="os-story-heading"><p className="os-eyebrow">03 / FROM PLAYER TO BUILDER</p><h2 id="story-heading">A lifelong game.<br />A simple idea.</h2><StorySlideshow /></div>
+            <div className="os-story-copy"><p className="os-story-lead">I’ve played soccer since I was three. Every team I was on used TeamSnap to organize and let family and friends follow along.</p><p>When I became captain of my college soccer team, I realized how critical team organization was—and how expensive it could be to use TeamSnap for a whole team.</p><p>So I built OpenSport, an independent, open-source alternative to TeamSnap. A way for sports teams to organize themselves, keep things simple, and make more room for the joy of playing.</p><img className="os-story-signature" src="/images/story/signature.png" width="475" height="93" alt="Gaspard Seuge" loading="lazy" decoding="async" /></div>
           </div>
         </section>
         <section className="os-hosting os-container" id="hosting" aria-labelledby="hosting-heading">
@@ -100,6 +109,27 @@ function AthletePortrait({ athlete }) {
   // Match the poster's responsive height so small screens fetch smaller cutouts.
   const sizes = `(max-width: 650px) ${37 * widthScale}vw, (max-width: 1050px) ${31 * widthScale}vw, (max-width: 1403px) ${29 * widthScale}vw, ${407 * widthScale}px`
   return <img data-athlete={athlete.id} className={`os-athlete os-athlete-${athlete.id}`} src={athlete.image} srcSet={`${athlete.smallImage} ${athlete.smallWidth}w, ${athlete.image} ${athlete.width}w`} sizes={sizes} width={athlete.width} height={athlete.height} alt={athlete.name} style={{ '--athlete-scale': scale, visibility: failed ? 'hidden' : undefined }} decoding="async" fetchPriority={athlete.id === 'lebron' ? 'high' : 'auto'} onError={() => setFailed(true)} />
+}
+function StorySlideshow() {
+  const [index, setIndex] = useState(0)
+  const swipeStart = useRef(null)
+  const count = storyPhotos.length
+  const show = next => setIndex((next + count) % count)
+  const label = number => String(number).padStart(2, '0')
+  return (
+    <section className="os-slideshow" aria-roledescription="carousel" aria-label="Photos from my years playing soccer" onKeyDown={event => { if (event.key === 'ArrowLeft') show(index - 1); if (event.key === 'ArrowRight') show(index + 1) }}>
+      <div className="os-slideshow-viewport" aria-live="polite" onPointerDown={event => { swipeStart.current = event.clientX }} onPointerUp={event => { const distance = event.clientX - (swipeStart.current ?? event.clientX); swipeStart.current = null; if (Math.abs(distance) > 40) show(index + (distance < 0 ? 1 : -1)) }}>
+        {storyPhotos.map((photo, slide) => <div key={photo.src} className="os-slide" role="group" aria-roledescription="slide" aria-label={`${slide + 1} of ${count}`} aria-hidden={slide !== index} data-active={slide === index || undefined}><img src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} loading="lazy" decoding="async" draggable="false" /></div>)}
+      </div>
+      <div className="os-slideshow-controls">
+        <span className="os-slideshow-count">{label(index + 1)} / {label(count)}</span>
+        <div><button type="button" aria-label="Previous photo" onClick={() => show(index - 1)}><Chevron direction="left" /></button><button type="button" aria-label="Next photo" onClick={() => show(index + 1)}><Chevron direction="right" /></button></div>
+      </div>
+    </section>
+  )
+}
+function Chevron({ direction }) {
+  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d={direction === 'left' ? 'm15 5-7 7 7 7' : 'm9 5 7 7-7 7'} /></svg>
 }
 function Feature({ number, title, description, detail }) {
   return <article className="os-feature"><span className="os-feature-number">{number}</span><p className="os-eyebrow">{detail}</p><h3>{title}</h3><p>{description}</p></article>
