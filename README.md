@@ -2,7 +2,7 @@
 
 **The free, open-source alternative to TeamSnap.** Your team. Your community. OpenSport.
 
-[Website and demo](https://getopensport.vercel.app) · [Setup guide](docs/SELF_HOSTING.md) · [Mac preview](docs/MAC_APP.md)
+[Website and demo](https://getopensport.vercel.app) · [Deploy to the cloud](docs/CLOUD.md) · [Self-hosting guide](docs/SELF_HOSTING.md) · [Mac preview](docs/MAC_APP.md)
 
 OpenSport is a self-hosted, open-source TeamSnap alternative: team management with no ads and no subscription. Coordinate schedules, rosters, and RSVPs for any sport; soccer teams can also use formations, published lineups, goals, and assists. One installation serves one team, with its own database and accounts.
 
@@ -31,6 +31,14 @@ The project site also plays a 25-second walkthrough of the demo. After changing 
 The example selects `VITE_APP_MODE=project`. Team mode is an explicit installation choice. A team installation directs visitors to its own sign-in and team workspace, not the project marketing page.
 
 ## Host your team
+
+### Deploy to the cloud (recommended)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FTheRealPress1%2Fopensport&project-name=opensport-team&repository-name=opensport-team&env=OPENSPORT_SETUP_CODE&envDescription=Choose%20a%20private%20setup%20code%20of%20at%20least%2012%20characters%2C%20like%20a%20short%20phrase.%20You%27ll%20enter%20it%20once%20to%20create%20your%20team%2C%20and%20again%20only%20to%20recover%20the%20owner%20account.&envLink=https%3A%2F%2Fgithub.com%2FTheRealPress1%2Fopensport%2Fblob%2Fmain%2Fdocs%2FCLOUD.md%23your-setup-code&stores=%5B%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22supabase%22%2C%22productSlug%22%3A%22supabase%22%7D%5D&demo-title=OpenSport&demo-description=The%20free%2C%20open-source%20alternative%20to%20TeamSnap.&demo-url=https%3A%2F%2Fgetopensport.vercel.app)
+
+The Deploy button gives your team its own copy of OpenSport on free Vercel and Supabase accounts, with no Terminal and no server to rent. You choose a private setup code while deploying, then create your team in the browser. The first build prepares the database, and every later production build applies new database changes. Follow the [cloud guide](docs/CLOUD.md) for the full walkthrough, costs, and owner recovery.
+
+### Host on your Mac
 
 **Host on the organizer’s Mac first** is the direction for the first Mac version. The [Mac hosting preview](docs/MAC_APP.md) provides guided setup without Docker, Terminal, or server rental for organizers using the packaged app. Once secure remote sharing ships, teammates will open a shared HTTPS address in their browsers, including on phones; only the organizer needs the Mac app.
 
@@ -71,6 +79,7 @@ React 19, Vite 8, Tailwind CSS 4, and Supabase (Postgres/Auth/Storage/Realtime).
 - `src/lib/useTeam.js` owns live reads, mutations, auth, and subscriptions.
 - `supabase/` contains the versioned schema, database permissions, privileged team administration function, and security tests.
 - `deploy/` and `scripts/ops.sh` package and operate the self-hosted service.
+- `api/`, `server/`, and `scripts/cloud-migrate.mjs` run one-click cloud installs: first-run setup and team administration as Vercel Functions, and database migrations during production builds.
 - `desktop/` packages the Mac setup app and supervises its experimental native server. The browser-facing gateway and native controls have separate permissions.
 
 Only public API credentials belong in frontend environment variables. Service credentials stay on the host. Google Maps is optional; manual location entry works without it.

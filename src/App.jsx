@@ -29,8 +29,9 @@ class AppErrorBoundary extends Component {
 
 export default function App() {
   const route = useSyncExternalStore(subscribe, getRoute)
+  // A one-click cloud install is always a team, even before its database is connected.
   const mode = import.meta.env.VITE_APP_MODE || (
-    import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY ? 'team' : 'project'
+    import.meta.env.VITE_OPENSPORT_CLOUD === '1' || (import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY) ? 'team' : 'project'
   )
   const demo = route === '#/demo' || window.location.pathname === '/demo'
   return (

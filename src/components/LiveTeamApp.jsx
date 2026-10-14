@@ -2,7 +2,9 @@ import { useRef, useState } from 'react'
 import { useTeam } from '../lib/useTeam'
 import { supabase } from '../lib/supabase'
 import { APP_BRAND } from '../lib/config'
+import { cloudInstall, useCloudStatus } from '../lib/cloud'
 import AuthScreen from './AuthScreen'
+import CloudSetup from './CloudSetup'
 import TeamWorkspace from './TeamWorkspace'
 
 function readCallback() {
@@ -14,11 +16,14 @@ function readCallback() {
 
 export default function LiveTeamApp() {
   const team = useTeam()
+  const setup = useCloudStatus()
   const [callback, setCallback] = useState(readCallback)
   if (callback) return <AccessCallback callback={callback} onComplete={async () => { await team.reload(); setCallback(null) }} />
+  if (!team.configured && cloudInstall) return <Status title="Connect your team’s database" detail="This OpenSport doesn’t have a database yet. In Vercel, open your project, choose Storage, and connect a Supabase database. Then redeploy the project." />
   if (!team.configured) return <Status title="Set up this team instance" detail="The backend connection is missing. Follow the self-hosting guide to configure this installation and create the first administrator." />
-  if (team.loading) return <Status title="Loading your team…" />
-  if (!team.session) return <AuthScreen onLogin={team.login} />
+  if (team.loading || (!team.session && setup.loading)) return <Status title="Loading your team…" />
+  if (!team.session && setup.status?.needsSetup) return <CloudSetup status={setup.status} onRefresh={setup.refresh} onCreated={async credentials => { const result = await team.login(credentials); if (!result?.error) setup.refresh(); return result }} />
+  if (!team.session) return <AuthScreen onLogin={team.login} cloud={cloudInstall} setupError={setup.error} />
   if (team.schemaRequired) return <Status title="Schema upgrade required" detail="This instance uses the earlier team schema. Keep the existing live deployment running and prepare a reviewed migration with a backup. Do not apply the fresh-install schema to this database."><p role="alert" className="mt-3 text-red-700">{team.error}</p></Status>
   if (team.error && !team.myInfo) return <Status title="Your team could not load" detail={team.error}><button className="mt-4 underline text-brand-700" onClick={team.reload}>Try again</button></Status>
   if (!team.hasProfile) return <Status title={team.myInfo?.active === false ? 'Team access is inactive' : 'An invitation is needed'} detail="Ask your organizer for a current invitation or help restoring your membership."><button className="underline text-brand-700 mt-4" onClick={team.logout}>Sign out</button>{team.error && <p role="alert" className="text-red-700 mt-3">{team.error}</p>}</Status>

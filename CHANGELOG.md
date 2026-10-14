@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased — One-click cloud deploy
+
+- Adds a Vercel Deploy button that gives a team its own OpenSport on free Vercel and Supabase accounts, with no Terminal or server.
+- Prepares the team's database during each production build, waiting for a brand-new Supabase project to come online.
+- Adds a browser setup screen protected by a setup code chosen while deploying, and owner recovery with the same code, limited to ten attempts an hour.
+- Runs invitations and recovery links as Vercel Functions that share their logic with the self-hosted Edge Function.
+- Reminds administrators to turn off Supabase's public sign-ups, and documents costs, pausing, backups, and updates in the cloud guide.
+
 ## Unreleased — Mac hosting preview
 
 - Requires authenticated native database startup with private installation credentials and encryption keys, a pinned source-built launcher, and a repeated authentication gate.

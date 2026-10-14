@@ -171,4 +171,20 @@ select test.ok((select count(*)=1 from public.soccer_events), 'successful invita
 select test.ok((select active and onboarding_completed_at is not null from public.soccer_members where user_id=auth.uid()), 'acceptance marks membership complete');
 select test.denied($q$select public.complete_invitation('50000000-0000-0000-0000-000000000001','replacement-token-hash-for-security-test','New teammate')$q$, '42501', 'accepted invitation cannot be replayed');
 
+-- One-click cloud installs count setup-code attempts on the server only.
+set local role anon;
+select test.denied($q$select public.record_setup_attempt()$q$, '42501', 'anonymous cannot count setup attempts');
+set local role authenticated;
+select test.denied($q$select public.record_setup_attempt()$q$, '42501', 'members cannot count setup attempts');
+select test.denied($q$select count(*) from private.setup_attempts$q$, '42501', 'members cannot read setup attempts');
+reset role;
+set local role service_role;
+select test.ok((select public.record_setup_attempt() = 1), 'the server counts a first setup attempt');
+select test.ok((select public.record_setup_attempt() = 2), 'setup attempts in the same hour add up');
+reset role;
+insert into private.setup_attempts(attempted_at) values (now() - interval '2 hours');
+set local role service_role;
+select test.ok((select public.record_setup_attempt() = 3), 'attempts older than an hour stop counting');
+reset role;
+
 rollback;
