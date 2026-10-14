@@ -16,3 +16,6 @@ export function cloudEnvironment(env = process.env) {
 }
 
 export const setupCode = (env = process.env) => env.OPENSPORT_SETUP_CODE || '';
+// Owner recovery stays off until the owner proves control of the Vercel project
+// by setting this variable and redeploying, like the self-hosted host command.
+export const ownerRecoveryEnabled = (env = process.env) => env.OPENSPORT_ALLOW_OWNER_RECOVERY === '1';

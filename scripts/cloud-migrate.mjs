@@ -82,11 +82,13 @@ const createClient = url => new pg.Client({
 });
 
 // Tries each address in order and returns the first connected client. While
-// every address reports that the database isn't ready, waits and tries again.
+// every address reports that the database isn't ready, waits and tries again;
+// an error that waiting can't fix ends it once every address has failed.
 export async function connectWhenReady(urls, { connect = createClient, waitMs = WAIT_FOR_DATABASE_MS, sleep = ms => new Promise(resolve => setTimeout(resolve, ms)), log = console.log } = {}) {
   const deadline = Date.now() + waitMs;
   for (let round = 1; ; round++) {
     let lastError;
+    let fatal;
     for (const url of urls) {
       const client = connect(url);
       try {
@@ -94,10 +96,11 @@ export async function connectWhenReady(urls, { connect = createClient, waitMs = 
         return client;
       } catch (error) {
         await client.end().catch(() => {});
-        if (!notReady(error)) throw error;
-        lastError = error;
+        if (notReady(error)) lastError = error;
+        else fatal ??= error;
       }
     }
+    if (fatal) throw fatal;
     if (Date.now() >= deadline) throw lastError;
     log(`The database isn't accepting connections yet (${lastError.message}). Trying again shortly.`);
     await sleep(Math.min(5000 * round, 20000));

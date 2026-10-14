@@ -4,7 +4,8 @@
 
 - Adds a Vercel Deploy button that gives a team its own OpenSport on free Vercel and Supabase accounts, with no Terminal or server.
 - Prepares the team's database during each production build, waiting for a brand-new Supabase project to come online.
-- Adds a browser setup screen protected by a setup code chosen while deploying, and owner recovery with the same code, limited to ten attempts an hour.
+- Adds a browser setup screen protected by a setup code chosen while deploying. Owner recovery uses the same code once the owner switches it on in Vercel. Code checks are limited per visitor and overall.
+- Replaces accounts that OpenSport didn't create, such as open Supabase sign-ups, when their address is invited or used for setup.
 - Runs invitations and recovery links as Vercel Functions that share their logic with the self-hosted Edge Function.
 - Reminds administrators to turn off Supabase's public sign-ups, and documents costs, pausing, backups, and updates in the cloud guide.
 

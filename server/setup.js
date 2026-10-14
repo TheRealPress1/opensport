@@ -5,8 +5,6 @@ import { createHash, timingSafeEqual } from 'node:crypto';
 import { ApiError, accessLink, errorResponse, jsonHeaders, oneMember, originAllowed, readJson, requireEnvironment, supabaseApi } from '../supabase/functions/team-admin/core.js';
 
 export const MINIMUM_CODE_LENGTH = 12;
-// Owners rarely need more than a couple of tries; guessers get very few.
-const MAX_ATTEMPTS_PER_HOUR = 10;
 const SPORT_MODES = ['general', 'soccer'];
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const digest = value => createHash('sha256').update(String(value)).digest();
@@ -38,13 +36,32 @@ async function teamStatus(env) {
   }
 }
 
-// Every code check counts, so the limit holds even for simultaneous guesses.
-async function recordAttempt(env) {
-  try { return Number(await supabaseApi(env, '/rest/v1/rpc/record_setup_attempt', {})); }
+// Vercel sets x-real-ip itself, so visitors can't choose their own allowance.
+// Only a digest is stored, salted with the setup code.
+function visitor(request, code) {
+  const address = request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'unknown';
+  return createHash('sha256').update(`${address}|${code}`).digest('hex');
+}
+
+// Each visitor gets ten code checks an hour and everyone together fifty; the
+// database decides. Anything but an explicit yes refuses the attempt.
+async function attemptAllowed(env, client) {
+  try { return await supabaseApi(env, '/rest/v1/rpc/record_setup_attempt', { p_client: client }) === true; }
   catch (error) {
     if (missingDatabaseObject(error)) throw new ApiError(503, 'The team database is still being prepared. Redeploy the project in Vercel, then try again.');
     throw error;
   }
+}
+
+// Removes an account that OpenSport didn't create, such as an open Supabase
+// sign-up, so whoever registered the address first keeps no password or session.
+async function replaceForeignAccount(env, email) {
+  const existing = await supabaseApi(env, '/rest/v1/rpc/find_invitation_user', { p_email: email });
+  if (!existing?.id) return null;
+  const member = await oneMember(env, 'user_id', String(existing.id));
+  if (member) return existing;
+  await supabaseApi(env, `/auth/v1/admin/users/${existing.id}`, undefined, env.serviceKey, 'DELETE');
+  return null;
 }
 
 async function signupsDisabled(env) {
@@ -77,18 +94,17 @@ async function createTeam(env, body) {
   if (!status.needsSetup) throw new ApiError(409, 'This team already has an administrator. Sign in instead.');
   // Settings first: they don't depend on the account, so a failure here leaves nothing to undo.
   await supabaseApi(env, '/rest/v1/team_settings?id=eq.1', { name: teamName, sport_mode: sportMode, timezone, season, scores_enabled: true }, env.serviceKey, 'PATCH');
+  // An earlier account is kept only if it already belongs to the team; any other
+  // is replaced, including one left by an interrupted setup.
+  const existing = await replaceForeignAccount(env, email);
   let userId;
   let created = false;
-  try {
-    userId = (await supabaseApi(env, '/auth/v1/admin/users', { email, password, email_confirm: true, user_metadata: { name } })).id;
-    created = true;
-  } catch (error) {
-    // A retry after an interrupted setup finds the account it already created.
-    if (error.status !== 422 && error.code !== 'email_exists') throw error;
-    const existing = await supabaseApi(env, '/rest/v1/rpc/find_invitation_user', { p_email: email });
-    if (!existing?.id) throw error;
+  if (existing) {
     userId = existing.id;
     await supabaseApi(env, `/auth/v1/admin/users/${userId}`, { password, email_confirm: true, user_metadata: { name } }, env.serviceKey, 'PUT');
+  } else {
+    userId = (await supabaseApi(env, '/auth/v1/admin/users', { email, password, email_confirm: true, user_metadata: { name } })).id;
+    created = true;
   }
   try {
     await supabaseApi(env, '/rest/v1/rpc/bootstrap_owner', { p_user_id: userId, p_email: email, p_name: name });
@@ -104,35 +120,45 @@ async function createTeam(env, body) {
 async function recoverOwner(env, body) {
   const email = validEmail(body.email);
   const existing = await supabaseApi(env, '/rest/v1/rpc/find_invitation_user', { p_email: email });
-  if (!existing?.id) throw new ApiError(404, 'No account uses that email address');
-  const member = await oneMember(env, 'user_id', String(existing.id));
+  const member = existing?.id ? await oneMember(env, 'user_id', String(existing.id)) : null;
+  // Only a team member can be restored; promoting any other account would hand
+  // the team to whoever registered that address.
+  if (!member) throw new ApiError(404, 'No team member uses that email address');
   const generated = await supabaseApi(env, '/auth/v1/admin/generate_link', { type: 'recovery', email });
   if (typeof generated.hashed_token !== 'string') throw new ApiError(502, 'Auth did not return a recovery link');
-  await supabaseApi(env, '/rest/v1/rpc/bootstrap_owner', { p_user_id: existing.id, p_email: email, p_name: member?.name || email.split('@')[0] });
+  await supabaseApi(env, '/rest/v1/rpc/bootstrap_owner', { p_user_id: existing.id, p_email: email, p_name: member.name || email.split('@')[0] });
   return { link: accessLink(env, 'recovery', 'recovery', generated.hashed_token) };
 }
 
-export function createSetupHandler(readEnvironment, readSetupCode, { failureDelay = 750 } = {}) {
+export function createSetupHandler(readEnvironment, readSetupCode, { failureDelay = 750, ownerRecovery = () => false } = {}) {
   return async function handleSetup(request) {
     const headers = jsonHeaders();
     try {
       const env = requireEnvironment(readEnvironment());
       if (request.method === 'GET') {
         const [status, disabled] = await Promise.all([teamStatus(env), signupsDisabled(env)]);
-        return new Response(JSON.stringify({ ...status, setupCode: setupCodeState(readSetupCode()), signupsDisabled: disabled, authSettingsUrl: authSettingsUrl(env) }), { status: 200, headers });
+        return new Response(JSON.stringify({ ...status, setupCode: setupCodeState(readSetupCode()), ownerRecovery: ownerRecovery() === true, signupsDisabled: disabled, authSettingsUrl: authSettingsUrl(env) }), { status: 200, headers });
       }
       if (request.method !== 'POST') throw new ApiError(405, 'Use GET or POST');
       if (!originAllowed(request, env.allowedOrigins || [])) throw new ApiError(403, 'This origin is not allowed');
       const body = await readJson(request);
       const expected = readSetupCode();
       if (setupCodeState(expected) !== 'ok') throw new ApiError(503, `Set OPENSPORT_SETUP_CODE to at least ${MINIMUM_CODE_LENGTH} characters in your Vercel project settings, then redeploy.`);
-      if (await recordAttempt(env) > MAX_ATTEMPTS_PER_HOUR) throw new ApiError(429, 'Too many setup code attempts. Wait an hour, then try again.');
+      // Outside these two moments the code can't be checked at all, so it can't be guessed.
+      const recovering = body.action === 'recover-owner';
+      if (recovering && ownerRecovery() !== true) throw new ApiError(403, 'Owner recovery is turned off. In your Vercel project, set OPENSPORT_ALLOW_OWNER_RECOVERY to 1 and redeploy, then try again.');
+      if (!recovering) {
+        const status = await teamStatus(env);
+        if (!status.databaseReady) throw new ApiError(503, 'The team database is still being prepared. Redeploy the project in Vercel, then try again.');
+        if (!status.needsSetup) throw new ApiError(409, 'This team already has an administrator. Sign in instead.');
+      }
+      if (!await attemptAllowed(env, visitor(request, expected))) throw new ApiError(429, 'Too many setup code attempts. Wait an hour, then try again.');
       if (!timingSafeEqual(digest(expected), digest(body.code ?? ''))) {
         // Slow down guessing; the code only guards setup and owner recovery.
         await new Promise(resolve => setTimeout(resolve, failureDelay));
         throw new ApiError(403, 'That setup code is not correct');
       }
-      const result = body.action === 'recover-owner' ? await recoverOwner(env, body) : await createTeam(env, body);
+      const result = recovering ? await recoverOwner(env, body) : await createTeam(env, body);
       return new Response(JSON.stringify(result), { status: 200, headers });
     } catch (error) {
       return errorResponse(error, headers);

@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 // A one-click cloud install's first-run screens, served in cloud mode with a
 // placeholder database address. Every server answer is scripted here.
 const cloudURL = 'http://127.0.0.1:4179/'
-const ready = { databaseReady: true, needsSetup: true, setupCode: 'ok', signupsDisabled: false, authSettingsUrl: null }
+const ready = { databaseReady: true, needsSetup: true, setupCode: 'ok', ownerRecovery: false, signupsDisabled: false, authSettingsUrl: null }
 
 async function openCloud(page, status, onPost) {
   const errors = []
@@ -43,9 +43,17 @@ test('setup explains a missing setup code and a database that is not ready', asy
   await expect(page.getByRole('heading', { name: 'Almost ready' })).toBeVisible()
 })
 
-test('an existing cloud team signs in, and its owner can recover access with the setup code', async ({ page }) => {
+test('an existing cloud team explains how its owner turns on recovery', async ({ page }) => {
+  await openCloud(page, { ...ready, needsSetup: false }, () => ({ status: 500 }))
+  await expect(page.getByRole('heading', { name: 'Your team, together' })).toBeVisible()
+  await page.getByRole('button', { name: 'Forgot password?' }).click()
+  await expect(page.getByText('Turn on owner recovery first.')).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Recover access' })).toHaveCount(0)
+})
+
+test('with recovery on, the owner can recover access with the setup code', async ({ page }) => {
   let posted
-  await openCloud(page, { ...ready, needsSetup: false }, body => { posted = body; return { status: 403, json: { error: 'That setup code is not correct' } } })
+  await openCloud(page, { ...ready, needsSetup: false, ownerRecovery: true }, body => { posted = body; return { status: 403, json: { error: 'That setup code is not correct' } } })
   await expect(page.getByRole('heading', { name: 'Your team, together' })).toBeVisible()
   await page.getByRole('button', { name: 'Forgot password?' }).click()
   const recovery = page.locator('form').filter({ hasText: 'Team owner? Use your setup code' })
