@@ -18,9 +18,7 @@
 .project-site .os-github { gap: 8px; border: 1px solid var(--line); padding: 10px 14px; border-radius: 3px; }
 .project-site .os-github>svg:last-child { width: 13px; height: 13px; }
 .project-site .os-eyebrow { font-size: 10px; font-weight: 700; line-height: 1.5; letter-spacing: 1.65px; }
-.project-site .os-hero { padding-top: 34px; }
-.project-site .os-hero-eyebrow { display: flex; justify-content: center; align-items: center; gap: 9px; margin-bottom: 17px; }
-.project-site .os-asterisk { color: var(--orange); font-size: 23px; line-height: 1; font-weight: 400; }
+.project-site .os-hero { padding-top: 56px; }
 .project-site .os-hero h1 { text-align: center; font-size: clamp(58px, 7.8vw, 112px); line-height: .91; text-transform: uppercase; font-weight: 800; color: var(--green); }
 .project-site .os-hero h1>span { color: var(--orange); }
 .project-site .os-hero-alternative { margin: 26px auto 0; text-align: center; font-size: clamp(20px, 2vw, 27px); line-height: 1.3; font-weight: 650; letter-spacing: -.02em; }
@@ -75,7 +73,12 @@
 .project-site .os-feature .os-eyebrow { margin-top: 21px; font-size: 8px; color: var(--muted); letter-spacing: 1.2px; }
 .project-site .os-feature h3 { font-size: 20px; font-weight: 650; line-height: 1.25; margin-top: 9px; }
 .project-site .os-feature>p:last-child { color: var(--muted); font-size: 13px; line-height: 1.8; margin-top: 12px; max-width: 335px; }
-.project-site .os-compare { padding-bottom: 91px; }
+.project-site .os-ticker { overflow: hidden; padding-block: 20px; color: var(--paper); background: var(--green); white-space: nowrap; }
+.project-site .os-ticker-track { display: inline-flex; animation: os-marquee 36s linear infinite; }.project-site .os-ticker:hover .os-ticker-track { animation-play-state: paused; }
+.project-site .os-ticker span { display: inline-flex; align-items: center; gap: 36px; padding-right: 36px; font: 800 32px/1 'OpenSport Display', Impact, sans-serif; letter-spacing: .01em; text-transform: uppercase; }
+.project-site .os-ticker i { font: 400 22px/1 Inter, system-ui, sans-serif; font-style: normal; color: var(--peach); }
+@keyframes os-marquee { to { transform: translateX(-50%); } }
+.project-site .os-compare { padding-block: 91px; background: #fffefa; }
 .project-site .os-compare h2>span { color: var(--green); }
 .project-site .os-compare-table { width: 100%; margin-top: 39px; table-layout: fixed; border-collapse: separate; border-spacing: 0; text-align: left; font-size: 14px; line-height: 1.6; }
 .project-site .os-compare-table th, .project-site .os-compare-table td { padding: 19px 26px; vertical-align: top; border-bottom: 1px solid var(--line); }
@@ -151,7 +154,6 @@
   .project-site .os-github { padding: 10px; }
   .project-site .os-github span, .project-site .os-github>svg:last-child { display: none; }
   .project-site .os-hero { padding-top: 31px; }
-  .project-site .os-hero-eyebrow { font-size: 8px; letter-spacing: 1.3px; margin-bottom: 18px; }
   .project-site .os-hero h1 { font-size: clamp(49px, 12.8vw, 83px); line-height: .95; }
   .project-site .os-hero-alternative { font-size: 19px; margin-top: 20px; max-width: 320px; }
   .project-site .os-hero-description { font-size: 12px; line-height: 1.85; margin-top: 10px; max-width: 330px; }
@@ -178,7 +180,8 @@
   .project-site .os-features { grid-template-columns: 1fr; gap: 24px; margin-top: 30px; }
   .project-site .os-feature { padding-top: 20px; padding-left: 42px; }.project-site .os-feature-number { position: absolute; top: 20px; left: 0; font-size: 25px; }
   .project-site .os-feature .os-eyebrow { margin-top: 0; font-size: 7px; }.project-site .os-feature h3 { font-size: 21px; margin-top: 7px; }.project-site .os-feature>p:last-child { font-size: 12px; margin-top: 10px; }
-  .project-site .os-compare { padding-bottom: 54px; }
+  .project-site .os-compare { padding-block: 54px; }
+  .project-site .os-ticker { padding-block: 14px; }.project-site .os-ticker span { gap: 24px; padding-right: 24px; font-size: 24px; }.project-site .os-ticker i { font-size: 17px; }
   .project-site .os-compare-table { margin-top: 28px; font-size: 12px; line-height: 1.55; }
   .project-site .os-compare-table, .project-site .os-compare-table thead, .project-site .os-compare-table tbody { display: block; }
   .project-site .os-compare-table tr { display: grid; grid-template-columns: 1fr 1fr; }
@@ -197,4 +200,4 @@
   .project-site .os-hero-actions { flex-direction: column; align-items: stretch; }
   .project-site .os-athlete-poster { margin-top: 25px; }
 }
-@media (prefers-reduced-motion: reduce) { .project-site .os-button, .project-site .os-slideshow-controls button, .project-site .os-slideshow-controls button svg { transition: none; transform: none !important; } .project-site .os-arrow path, .project-site .os-download-arrow { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { .project-site .os-button, .project-site .os-slideshow-controls button, .project-site .os-slideshow-controls button svg { transition: none; transform: none !important; } .project-site .os-arrow path, .project-site .os-download-arrow, .project-site .os-ticker-track { animation: none !important; } }
