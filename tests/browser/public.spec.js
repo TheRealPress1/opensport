@@ -55,6 +55,12 @@ test('public site and source download work without a team account', async ({ pag
   await expect(page.getByRole('link', { name: 'View OpenSport on GitHub' })).toHaveAttribute('href', 'https://github.com/TheRealPress1/opensport')
   await expect(page.getByRole('link', { name: 'Try the demo', exact: true }).first()).toHaveAttribute('href', '/#/demo')
   await expect(page.getByRole('link', { name: 'Download', exact: true }).first()).toHaveAttribute('href', '/downloads/opensport-0.1.0-source.zip')
+  await expect(page.getByRole('link', { name: 'Start your team', exact: true })).toHaveAttribute('href', '#hosting')
+  const deploy = new URL(await page.getByRole('link', { name: 'Deploy your team', exact: true }).getAttribute('href'))
+  expect(deploy.origin + deploy.pathname).toBe('https://vercel.com/new/clone')
+  expect(deploy.searchParams.get('repository-url')).toBe('https://github.com/TheRealPress1/opensport')
+  expect(deploy.searchParams.get('env')).toBe('OPENSPORT_SETUP_CODE')
+  expect(JSON.parse(deploy.searchParams.get('stores'))).toEqual([{ type: 'integration', integrationSlug: 'supabase', productSlug: 'supabase' }])
   await expect(athleteImages(page)).toHaveCount(athleteNames.length)
   for (const image of await athleteImages(page).all()) {
     await expect(image).toBeVisible()
@@ -126,6 +132,7 @@ test('public site and source download work without a team account', async ({ pag
   }
   await page.getByRole('link', { name: 'Setup guide', exact: true }).first().click()
   await expect(page.getByRole('heading', { name: 'Give your team a home.' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Deploy your team ↗' })).toHaveAttribute('href', /^https:\/\/vercel\.com\/new\/clone\?/)
   const guide = await request.get(await page.getByRole('link', { name: 'Download the complete hosting guide' }).getAttribute('href'))
   expect(guide.ok()).toBeTruthy()
   expect(await guide.text()).toContain('Backup and restore')
@@ -156,7 +163,7 @@ test('landing stays usable by keyboard and on narrow screens when photographs fa
     await page.setViewportSize({ width, height: 900 })
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(headline)
     await expect(demo).toBeVisible()
-    for (const action of [demo, page.getByRole('link', { name: 'Download', exact: true }).first()]) {
+    for (const action of [demo, page.getByRole('link', { name: 'Start your team', exact: true })]) {
       const box = await action.boundingBox()
       expect(box.width).toBeGreaterThanOrEqual(44)
       expect(box.height).toBeGreaterThanOrEqual(44)

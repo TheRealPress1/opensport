@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { DOWNLOAD_URL, RELEASE_VERSION, REPOSITORY_URL, SETUP_URL } from '../lib/project'
+import { CLOUD_GUIDE_URL, DEPLOY_URL, DOWNLOAD_URL, RELEASE_VERSION, REPOSITORY_URL, SETUP_URL } from '../lib/project'
 import { athletes, photoCreditsUrl } from '../lib/athletes'
 import licenseUrl from '../../LICENSE?url&no-inline'
 import contributionUrl from '../../CONTRIBUTING.md?url&no-inline'
@@ -18,10 +18,10 @@ const tickerItems = ['Free', 'Open source', 'No ads', 'No subscription', 'Your d
 
 // TeamSnap claims are sourced in the comparison note; re-check them before each release.
 const comparison = [
-  ['Price', 'Free to start. Paid upgrades unlock availability tracking and bigger rosters.', 'Free, RSVPs included. Hosting costs depend on your setup.'],
+  ['Price', 'Free to start. Paid upgrades unlock availability tracking and bigger rosters.', 'Free, RSVPs included. Free cloud plans cover a typical team.'],
   ['Ads', 'Banner and full-screen ads in the mobile app unless you pay to remove them.', 'None.'],
   ['Source code', 'Closed.', 'Open source under the MIT license.'],
-  ['Your team’s data', 'Hosted by TeamSnap.', 'On a computer or server you control.'],
+  ['Your team’s data', 'Hosted by TeamSnap.', 'In your own cloud accounts, or on a server you control.'],
   ['Make it your own', 'Use the settings TeamSnap provides.', 'Change anything in the code.'],
   ['Phone apps, payments, registration', 'Yes.', 'Not yet. OpenSport runs in any browser.'],
 ]
@@ -44,8 +44,8 @@ export default function LandingPage() {
           <p className="os-hero-alternative">The free, open-source alternative to <strong>TeamSnap</strong>.</p>
           <p className="os-hero-description">Schedules, rosters, and RSVPs in one place. No ads, no subscription,<br className="os-desktop-break" /> and your team’s data stays on a host you control.</p>
           <div className="os-hero-actions">
-            <a className="os-button os-button-primary" href="/#/demo">Try the demo <Arrow /></a>
-            <a className="os-button os-button-secondary" href={DOWNLOAD_URL} download>Download <DownloadIcon /></a>
+            <a className="os-button os-button-primary" href="#hosting">Start your team <Arrow /></a>
+            <a className="os-button os-button-secondary" href="/#/demo">Try the demo <Arrow /></a>
           </div>
           <figure className="os-athlete-poster" aria-label="Athletes from soccer, basketball, baseball, and American football, arranged from shortest to tallest">
             <div className="os-height-lines" aria-hidden="true">{[0, 1, 2, 3, 4].map(line => <span key={line} />)}</div>
@@ -85,10 +85,11 @@ export default function LandingPage() {
           </div>
         </section>
         <section className="os-hosting os-container" id="hosting" aria-labelledby="hosting-heading">
-          <div className="os-section-heading"><div><p className="os-eyebrow">04 / MAKE IT YOUR OWN</p><h2 id="hosting-heading">Your team.<br />Your home court.</h2></div><p className="os-section-aside">One installation. One private team.<br />OpenSport is free to adapt and run on a host you control. Here’s where the project stands today.</p></div>
+          <div className="os-section-heading"><div><p className="os-eyebrow">04 / MAKE IT YOUR OWN</p><h2 id="hosting-heading">Your team.<br />Your home court.</h2></div><p className="os-section-aside">One installation. One private team.<br />Deploy it free in the cloud in a few minutes, or run it on a computer you control.</p></div>
           <div className="os-hosting-options">
+            <article className="os-hosting-cloud"><div className="os-hosting-top"><CloudIcon /><span className="os-status-label">RECOMMENDED · FREE</span></div><div className="os-cloud-layout"><div><h3>Deploy to the cloud.</h3><p>Give your team its own OpenSport in about five minutes. One click copies OpenSport to your GitHub account and runs it on free Vercel and Supabase accounts. No Terminal, nothing to install, and your team’s data stays in accounts you own.</p><div className="os-cloud-actions"><a className="os-button os-button-light" href={DEPLOY_URL} target="_blank" rel="noreferrer">Deploy your team <Arrow /></a><a className="os-text-link" href={CLOUD_GUIDE_URL} target="_blank" rel="noreferrer">Read the cloud guide <Arrow /></a></div></div><ol className="os-cloud-steps"><li><span>01</span>Click Deploy and sign in to Vercel with GitHub.</li><li><span>02</span>Add a free Supabase database and choose a private setup code.</li><li><span>03</span>Open your new site, create your team, and invite your teammates.</li></ol></div></article>
             <article className="os-hosting-mac"><div className="os-hosting-top"><ComputerIcon /><span className="os-status-label">LOCAL ALPHA</span></div><h3>A team home on your Mac.</h3><p>We’re building a Mac app that guides you through hosting your team, without Docker or Terminal.</p><div className="os-preview-note"><strong>The Mac preview works on the host Mac only.</strong><p>Internet sharing is still in development, so teammates can’t connect remotely yet. Public Mac downloads are not available.</p></div><span className="os-platform-note">Apple silicon · macOS 14 or later</span></article>
-            <article className="os-hosting-server"><div className="os-hosting-top"><CodeIcon /><span className="os-status-label">ADVANCED SETUP</span></div><h3>Bring your own server.</h3><p>Developers can download the source and use the Docker setup guide. Remote access needs an always-on host, a domain, and HTTPS.</p><a className="os-text-link" href={SETUP_URL}>Read the server setup guide <Arrow /></a><p className="os-server-note">No OpenSport subscription or Supabase cloud account required. Hosting and domain costs depend on your setup.</p></article>
+            <article className="os-hosting-server"><div className="os-hosting-top"><CodeIcon /><span className="os-status-label">ADVANCED SETUP</span></div><h3>Bring your own server.</h3><p>Developers can download the source and use the Docker setup guide. Remote access needs an always-on host, a domain, and HTTPS.</p><div className="os-server-actions"><a className="os-button os-button-secondary" href={DOWNLOAD_URL} download>Download <DownloadIcon /></a><a className="os-text-link" href={SETUP_URL}>Read the server setup guide <Arrow /></a></div><p className="os-server-note">No OpenSport subscription or Supabase cloud account required. Hosting and domain costs depend on your setup.</p></article>
           </div>
         </section>
         <section className="os-contribute os-container" aria-labelledby="contribute-heading"><div><p className="os-eyebrow">GOOD THINGS ARE BUILT TOGETHER.</p><h2 id="contribute-heading">The next move is ours.</h2><p>Try it. Break it. Make it better.<br />There’s room for you on this team.</p></div><a className="os-button os-button-primary" href={REPOSITORY_URL} target="_blank" rel="noreferrer"><GitHubIcon /> Explore on GitHub <Arrow /></a><span className="os-contribute-star" aria-hidden="true">✳</span></section>
@@ -182,6 +183,9 @@ function Arrow() {
 }
 function DownloadIcon() {
   return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path className="os-download-arrow" d="M12 3v12m-5-5 5 5 5-5" /><path d="M5 16v5h14v-5" /></svg>
+}
+function CloudIcon() {
+  return <svg width="31" height="31" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M10 25h13.5a5.5 5.5 0 0 0 .9-10.93A7.5 7.5 0 0 0 9.9 15.6 4.75 4.75 0 0 0 10 25Z" /></svg>
 }
 function ComputerIcon() {
   return <svg width="31" height="31" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="4" y="5" width="24" height="18" rx="2" /><path d="M4 19h24M16 23v5m-6 0h12" /></svg>
