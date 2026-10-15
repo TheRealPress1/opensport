@@ -39,8 +39,9 @@ export default function StartTeam() {
               <p>In the box next to <strong>OPENSPORT_SETUP_CODE</strong>, type a private phrase of at least 12 characters, like <code>riverside spring 2027</code>.</p>
               <p><strong>Write it down.</strong> You’ll need it in a few minutes to create your team. Then click <strong>Deploy</strong>.</p>
             </Step>
-            <Step number="06" title="Wait about two minutes" screen={<BuildScreen />}>
+            <Step number="06" title="Wait a few minutes" screen={<BuildScreen />}>
               <p>Vercel builds your site and prepares your team’s database. When it’s done, it brings you back to OpenSport with a link to your team.</p>
+              <p>If you stay on Vercel instead, click <strong>Continue to Dashboard</strong>, then <strong>Visit</strong>. That’s your team’s site.</p>
             </Step>
           </ol>
           <div className="os-start-again"><a className="os-button os-button-primary" href={DEPLOY_URL} target="_blank" rel="noreferrer">Start my team <Arrow /></a><span>Opens Vercel in a new tab. Keep this page open.</span></div>
@@ -60,7 +61,7 @@ function Intro() {
       <ul className="os-start-accounts" aria-label="The three free services your team uses">
         {accounts.map(([name, role]) => <li key={name}><strong>{name}</strong><span>{role}</span><em>Free</em></li>)}
       </ul>
-      <div className="os-start-actions"><a className="os-button os-button-primary" href={DEPLOY_URL} target="_blank" rel="noreferrer">Start my team <Arrow /></a><span>Opens Vercel in a new tab.</span></div>
+      <div className="os-start-actions"><a className="os-button os-button-primary" href={DEPLOY_URL} target="_blank" rel="noreferrer">Start my team <Arrow /></a><span>Opens Vercel in a new tab. Best on a computer; your teammates can use their phones afterward.</span></div>
     </section>
   )
 }
@@ -70,14 +71,19 @@ function Ready({ deployment }) {
     <section className="os-start-ready" aria-labelledby="ready-heading">
       <p className="os-eyebrow">YOU DID IT</p>
       <h1 id="ready-heading">Your team’s site is live.</h1>
-      <p className="os-start-address">{deployment.host}</p>
-      <a className="os-button os-button-light" href={deployment.url} target="_blank" rel="noreferrer">Open my team <Arrow /></a>
+      {deployment.url ? <>
+        <p className="os-start-address">{deployment.host}</p>
+        <a className="os-button os-button-light" href={deployment.url} target="_blank" rel="noreferrer">Open my team <Arrow /></a>
+      </> : <>
+        <p className="os-start-address">Open your project on Vercel, then click Visit.</p>
+        <a className="os-button os-button-light" href={deployment.dashboard || 'https://vercel.com/dashboard'} target="_blank" rel="noreferrer">Open my Vercel dashboard <Arrow /></a>
+      </>}
       <ol className="os-start-next">
         <li><span>01</span><p>Enter the setup code you chose on Vercel.</p></li>
         <li><span>02</span><p>Name your team and create your own account.</p></li>
         <li><span>03</span><p>In <strong>Manage</strong>, create an invitation link for each teammate and send it by text or email.</p></li>
       </ol>
-      <p className="os-start-bookmark">Bookmark your team’s address. You and your teammates will use it every week.{deployment.dashboard && <> You can always find it on <a href={deployment.dashboard} target="_blank" rel="noreferrer">your Vercel dashboard ↗</a>.</>}</p>
+      <p className="os-start-bookmark">Bookmark your team’s address. You and your teammates will use it every week.{deployment.url && deployment.dashboard && <> You can always find it on <a href={deployment.dashboard} target="_blank" rel="noreferrer">your Vercel dashboard ↗</a>.</>}</p>
     </section>
   )
 }
@@ -87,7 +93,7 @@ function Help() {
     <section className="os-start-help" id="start-help" aria-labelledby="help-heading">
       <p className="os-eyebrow">HELP</p>
       <h2 id="help-heading">If something looks different.</h2>
-      <details><summary>Supabase’s Free plan is greyed out</summary><p>Supabase allows each person two active free projects. If you already have two, pause or delete one you don’t need at <a href="https://supabase.com/dashboard/projects" target="_blank" rel="noreferrer">supabase.com/dashboard</a>, or sign up with a different email. Don’t pick a paid plan just to continue.</p></details>
+      <details><summary>Supabase’s Free plan is greyed out</summary><p>Supabase allows each person two active free projects. If you already have two, pause or delete one you no longer need at <a href="https://supabase.com/dashboard/projects" target="_blank" rel="noreferrer">supabase.com/dashboard</a>, then click <strong>Add</strong> next to Supabase again.</p></details>
       <details><summary>The deploy failed</summary><p>A brand-new database can take a few minutes to start. On Vercel, open your project, then <strong>Deployments</strong>, and choose <strong>Redeploy</strong> on the latest one.</p></details>
       <details><summary>I closed the tab before it finished</summary><p>Go to <a href="https://vercel.com/dashboard" target="_blank" rel="noreferrer">vercel.com/dashboard</a>, open your project, and click <strong>Visit</strong>. That’s your team’s site.</p></details>
       <details><summary>Is it really free?</summary><p>Yes for a typical team: GitHub, Vercel’s Hobby plan, and Supabase’s Free plan all cost $0. Vercel’s Hobby plan is for personal, non-commercial use, so a club that charges fees should use Vercel Pro.</p></details>
