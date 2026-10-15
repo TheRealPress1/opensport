@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { createDemoData } from '../lib/demo'
-import { SETUP_URL } from '../lib/project'
+import { START_URL } from '../lib/project'
 import TeamWorkspace from './TeamWorkspace'
 
 export default function DemoTeamApp() {
@@ -29,7 +29,7 @@ export default function DemoTeamApp() {
       <div className="bg-brand-700 px-4 py-3 text-white">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3 text-xs">
           <div><a className="font-bold underline underline-offset-4" href="/">← OpenSport</a></div>
-          <div className="flex flex-wrap items-center gap-4"><label className="font-semibold">Sport mode<select aria-label="Demo sport mode" className="ml-2 rounded-lg border border-white/70 bg-white px-2 py-2 text-gray-900" value={data.settings.sport_mode} onChange={event => setData(previous => ({ ...previous, settings: { ...previous.settings, sport_mode: event.target.value } }))}><option value="soccer">Soccer</option><option value="general">General</option></select></label><a className="font-semibold underline underline-offset-4" href={SETUP_URL}>Host your team ↗</a></div>
+          <div className="flex flex-wrap items-center gap-4"><label className="font-semibold">Sport mode<select aria-label="Demo sport mode" className="ml-2 rounded-lg border border-white/70 bg-white px-2 py-2 text-gray-900" value={data.settings.sport_mode} onChange={event => setData(previous => ({ ...previous, settings: { ...previous.settings, sport_mode: event.target.value } }))}><option value="soccer">Soccer</option><option value="general">General</option></select></label><a className="font-semibold underline underline-offset-4" href={START_URL}>Host your team ↗</a></div>
         </div>
       </div>
       <TeamWorkspace team={team} demo />

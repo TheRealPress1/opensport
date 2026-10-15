@@ -8,6 +8,7 @@
 - Replaces accounts that OpenSport didn't create, such as open Supabase sign-ups, when their address is invited or used for setup.
 - Runs invitations and recovery links as Vercel Functions that share their logic with the self-hosted Edge Function.
 - Documents costs, pausing, backups, updates, and optional sign-up settings in the cloud guide, without asking new coaches to change Supabase settings.
+- Adds a guided Start your team page that pictures every Vercel and GitHub screen, including creating a GitHub account, and welcomes coaches back with a link to their new site after Vercel deploys it.
 - Makes "Start your team" the main call to action on the project site, with a featured cloud card, the cloud option first in the setup guide, and the source download moved to the self-hosting card.
 
 ## Unreleased — Mac hosting preview
