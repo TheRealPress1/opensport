@@ -349,3 +349,21 @@ Remaining gate: one real Deploy-button run on Vercel with the Supabase
 Marketplace integration, covering provisioning timing, Supabase's pooled
 connection strings, and the live sign-up setting. It needs the code on `main` and
 an account owner to accept Supabase's terms.
+
+### Start your team guide — 2026-10-15
+
+No real Deploy-button run was possible, so the remaining risks were narrowed
+without one:
+
+- Vercel's page for a signed-out visitor was loaded directly: it shows
+  OpenSport's title and offers Continue with GitHub, which also creates the
+  Vercel account. The guide's first two steps match it.
+- Migrations ran over TLS with integration-style addresses
+  (`sslmode=require&supa=base-pooler.x`) against a local database using a
+  self-signed certificate. An unreachable IPv6 direct address fell back to the
+  pooled address after its 15-second timeout. The same address passed straight
+  to node-postgres fails certificate verification, which the script avoids.
+- Vercel's documented `redirect-url` callback is untested in production. The
+  guide therefore welcomes back any return carrying a Vercel callback
+  parameter, accepts only https `vercel.app` addresses for the Open my team
+  link, and tells coaches what to do if Vercel doesn't send them back.
