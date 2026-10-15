@@ -14,7 +14,7 @@ export default function StartTeam() {
   const deployment = readDeployment()
   return (
     <div className="project-site os-start">
-      <header className="os-start-nav os-container"><a href="/">← OpenSport</a></header>
+      <Header deployed={Boolean(deployment)} />
       <main className="os-container">
         {deployment ? <Ready deployment={deployment} /> : <Intro />}
         {!deployment && <section className="os-start-steps" aria-labelledby="steps-heading">
@@ -47,6 +47,22 @@ export default function StartTeam() {
         <Help />
       </main>
     </div>
+  )
+}
+
+// The homepage's header, with the way back and this page's own actions.
+function Header({ deployed }) {
+  const showHelp = () => document.getElementById('start-help')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+  return (
+    <header className="os-nav os-container">
+      <a className="os-wordmark" href="/" aria-label="OpenSport home"><img src="/favicon.svg" width="34" height="34" alt="" />OpenSport<span className="os-wordmark-period">.</span></a>
+      <nav aria-label="Main navigation">
+        <a href="/">← Home</a>
+        <a className="os-nav-secondary" href="/#/demo">Try the demo</a>
+        <button type="button" className="os-nav-secondary os-start-nav-help" onClick={showHelp}>Help</button>
+        {!deployed && <a className="os-nav-secondary os-start-nav-cta" href={DEPLOY_URL} target="_blank" rel="noreferrer">Start my team <Arrow /></a>}
+      </nav>
+    </header>
   )
 }
 
