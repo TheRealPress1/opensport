@@ -5,6 +5,7 @@ import LandingPage from './components/LandingPage'
 const DemoTeamApp = lazy(() => import('./components/DemoTeamApp'))
 const LiveTeamApp = lazy(() => import('./components/LiveTeamApp'))
 const SetupGuide = lazy(() => import('./components/SetupGuide'))
+const StartTeam = lazy(() => import('./components/StartTeam'))
 const DesktopSetup = lazy(() => import('./components/DesktopSetup'))
 const subscribe = (notify) => {
   window.addEventListener('hashchange', notify)
@@ -34,10 +35,12 @@ export default function App() {
     import.meta.env.VITE_OPENSPORT_CLOUD === '1' || (import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY) ? 'team' : 'project'
   )
   const demo = route === '#/demo' || window.location.pathname === '/demo'
+  // Vercel returns coaches from the Deploy button with their new site's address.
+  const start = mode !== 'team' && (route.startsWith('#/start') || new URLSearchParams(window.location.search).has('deployment-url'))
   return (
     <AppErrorBoundary>
       <Suspense fallback={<div role="status" className="grid min-h-screen place-items-center bg-[#f7f6ef] font-semibold text-emerald-950">Loading OpenSport…</div>}>
-        {mode === 'desktop' ? <DesktopSetup /> : demo ? <DemoTeamApp /> : route === '#/setup' || window.location.pathname === '/setup' ? <SetupGuide /> : mode === 'team' ? <LiveTeamApp /> : <LandingPage />}
+        {mode === 'desktop' ? <DesktopSetup /> : demo ? <DemoTeamApp /> : start ? <StartTeam /> : route === '#/setup' || window.location.pathname === '/setup' ? <SetupGuide /> : mode === 'team' ? <LiveTeamApp /> : <LandingPage />}
       </Suspense>
     </AppErrorBoundary>
   )

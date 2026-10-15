@@ -3,9 +3,10 @@
 The quickest way to run OpenSport. The Deploy button copies OpenSport into your
 own GitHub account and runs it on your own free Vercel and Supabase accounts.
 There's no Terminal, no server to rent, and nobody else holds your team's data.
-One deployment runs one private team.
+One deployment runs one private team. For a guided walkthrough with pictures of
+every screen, open [Start your team](https://getopensport.vercel.app/#/start).
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FTheRealPress1%2Fopensport&project-name=opensport-team&repository-name=opensport-team&env=OPENSPORT_SETUP_CODE&envDescription=Choose%20a%20private%20setup%20code%20of%20at%20least%2012%20characters%2C%20like%20a%20short%20phrase.%20You%27ll%20enter%20it%20once%20to%20create%20your%20team%2C%20and%20again%20only%20to%20recover%20the%20owner%20account.&envLink=https%3A%2F%2Fgithub.com%2FTheRealPress1%2Fopensport%2Fblob%2Fmain%2Fdocs%2FCLOUD.md%23your-setup-code&stores=%5B%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22supabase%22%2C%22productSlug%22%3A%22supabase%22%7D%5D&demo-title=OpenSport&demo-description=The%20free%2C%20open-source%20alternative%20to%20TeamSnap.&demo-url=https%3A%2F%2Fgetopensport.vercel.app)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FTheRealPress1%2Fopensport&project-name=opensport-team&repository-name=opensport-team&env=OPENSPORT_SETUP_CODE&envDescription=Choose%20a%20private%20setup%20code%20of%20at%20least%2012%20characters%2C%20like%20a%20short%20phrase.%20You%27ll%20enter%20it%20once%20to%20create%20your%20team%2C%20and%20again%20only%20to%20recover%20the%20owner%20account.&envLink=https%3A%2F%2Fgithub.com%2FTheRealPress1%2Fopensport%2Fblob%2Fmain%2Fdocs%2FCLOUD.md%23your-setup-code&stores=%5B%7B%22type%22%3A%22integration%22%2C%22integrationSlug%22%3A%22supabase%22%2C%22productSlug%22%3A%22supabase%22%7D%5D&demo-title=OpenSport&demo-description=The%20free%2C%20open-source%20alternative%20to%20TeamSnap.&demo-url=https%3A%2F%2Fgetopensport.vercel.app&redirect-url=https%3A%2F%2Fgetopensport.vercel.app%2F)
 
 ## What it costs
 
@@ -21,17 +22,20 @@ Check [Vercel's pricing](https://vercel.com/pricing) and
 
 ## Set it up
 
-You need a GitHub account. It takes about five minutes.
+All you need is an email address. It takes about ten minutes.
 
-1. **Click Deploy.** Sign in to Vercel; signing in with GitHub is easiest.
+1. **Click Deploy, then Continue with GitHub.** That also creates your free
+   Vercel account. No GitHub account? On GitHub's sign-in page, choose **Create
+   an account**, verify your email, and GitHub sends you back to Vercel.
 2. **Create the repository.** Vercel copies OpenSport into your GitHub account.
    Name it after your team, for example `riverside-fc`. Your team's address
-   becomes something like `riverside-fc.vercel.app`.
+   becomes something like `riverside-fc.vercel.app`. If Vercel asks for a plan
+   or a team, choose **Hobby**, the free one.
 3. **Add Supabase.** Create a new database on the **Free** plan, in the region
    closest to your team. Vercel connects it to your project for you.
 4. **Choose your setup code.** See [Your setup code](#your-setup-code).
 5. **Deploy.** The first build also prepares your team's database. When it
-   finishes, open your new site.
+   finishes, Vercel brings you back to OpenSport with a link to your new site.
 6. **Create your team.** Enter your setup code, your team's name, sport, and
    timezone, and your own name, email, and password. You become the team's
    administrator and are signed in.
@@ -102,6 +106,9 @@ deploys the update and applies any database changes during the build.
 
 ## Troubleshooting
 
+- **Supabase's Free plan is greyed out.** Supabase allows each person two active
+  free projects. Pause or delete one you don't need in the Supabase dashboard,
+  or sign up with a different email. You don't need a paid plan.
 - **The build failed with "Database migration failed".** A brand-new database
   can take a few minutes to start. Wait a minute, then open **Deployments** in
   Vercel and choose **Redeploy** on the latest one.
