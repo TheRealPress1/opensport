@@ -1,12 +1,10 @@
 import { useState } from 'react'
 import { useModal } from '../lib/useModal'
 import { DEFAULT_TEAM } from '../lib/config'
-import { cloudInstall, useCloudStatus } from '../lib/cloud'
 
 const inputClass = 'mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm'
 export default function AdminPanel({ team, onClose }) {
   const modalRef = useModal(onClose)
-  const cloud = useCloudStatus()
   const [settings, setSettings] = useState(() => Object.fromEntries(Object.keys(DEFAULT_TEAM).map(key => [key, team.settings[key] ?? DEFAULT_TEAM[key]])))
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
@@ -26,7 +24,6 @@ export default function AdminPanel({ team, onClose }) {
   return <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={onClose}>
     <section ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="manage-title" className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-6" onClick={event => event.stopPropagation()}>
       <div className="flex items-center justify-between"><h2 id="manage-title" className="text-xl font-bold">Manage your team</h2><button aria-label="Close team settings" onClick={onClose} className="p-2">✕</button></div>
-      {cloudInstall && cloud.status?.signupsDisabled === false && <div className="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900"><p className="font-semibold">Turn off public sign-ups</p><p className="mt-1">Supabase still lets anyone create an account on your project. Those accounts can’t see your team, but switch off “Allow new users to sign up” to keep them out entirely. If Supabase asks you to sign in, open it from your Vercel project’s Storage tab instead.</p>{cloud.status.authSettingsUrl && <a className="mt-2 inline-block font-semibold underline" href={cloud.status.authSettingsUrl} target="_blank" rel="noreferrer">Open Supabase sign-in settings ↗</a>}</div>}
       {error && <p role="alert" className="mt-4 rounded-lg bg-red-50 p-3 text-red-700">{error}</p>}
       {notice && <p role="status" className="mt-4 text-brand-800">{notice}</p>}
       {link && <div className="mt-3 p-3 bg-brand-50 rounded-lg"><label className="block text-sm font-semibold">Private, expiring link<input readOnly value={link} className={inputClass} onFocus={event => event.target.select()} /></label><button className="text-sm underline mt-2" onClick={() => navigator.clipboard.writeText(link).then(() => setNotice('Link copied.')).catch(() => setNotice('Select and copy the link above.'))}>Copy link</button></div>}

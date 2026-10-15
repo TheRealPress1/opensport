@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 // A one-click cloud install's first-run screens, served in cloud mode with a
 // placeholder database address. Every server answer is scripted here.
 const cloudURL = 'http://127.0.0.1:4179/'
-const ready = { databaseReady: true, needsSetup: true, setupCode: 'ok', ownerRecovery: false, signupsDisabled: false, authSettingsUrl: null }
+const ready = { databaseReady: true, needsSetup: true, setupCode: 'ok', ownerRecovery: false }
 
 async function openCloud(page, status, onPost) {
   const errors = []

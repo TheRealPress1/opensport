@@ -77,22 +77,18 @@ test('team administration accepts deployment origins and rejects others', async 
   })
 })
 
-test('setup status reports a missing owner, missing tables, and open sign-ups', async () => {
+test('setup status reports a missing owner and missing tables', async () => {
   const handle = setupWith('correct horse battery')
-  await withUpstream([
-    admins([]),
-    ['GET', /^\/auth\/v1\/settings$/, () => json({ disable_signup: false })],
-  ], async () => {
+  await withUpstream([admins([])], async calls => {
     const body = await (await handle(new Request(`${SITE}/api/setup`))).json()
-    assert.deepEqual(body, { databaseReady: true, needsSetup: true, setupCode: 'ok', ownerRecovery: false, signupsDisabled: false, authSettingsUrl: 'https://supabase.com/dashboard/project/abcdefgh/auth/providers' })
+    assert.deepEqual(body, { databaseReady: true, needsSetup: true, setupCode: 'ok', ownerRecovery: false })
+    assert.equal(calls.length, 1, 'one database read per status check')
   })
   await withUpstream([
     ['GET', /^\/rest\/v1\/soccer_members/, () => json({ code: 'PGRST205', message: 'Could not find the table' }, 404)],
-    ['GET', /^\/auth\/v1\/settings$/, () => json({ disable_signup: true })],
   ], async () => {
     const body = await (await setupWith('correct horse battery', { ownerRecovery: true })(new Request(`${SITE}/api/setup`))).json()
     assert.equal(body.databaseReady, false)
-    assert.equal(body.signupsDisabled, true)
     assert.equal(body.ownerRecovery, true)
   })
 })
@@ -147,10 +143,7 @@ test('attempts are counted per visitor without storing their address', async () 
 
 test('setup status reports a missing or short setup code', async () => {
   for (const [code, state] of [['', 'missing'], ['eleven char', 'too-short']]) {
-    await withUpstream([
-      admins([]),
-      ['GET', /^\/auth\/v1\/settings$/, () => json({ disable_signup: true })],
-    ], async () => {
+    await withUpstream([admins([])], async () => {
       const body = await (await setupWith(code)(new Request(`${SITE}/api/setup`))).json()
       assert.equal(body.setupCode, state)
       assert.equal(JSON.stringify(body).includes(code || '\u0000'), false, 'the code itself is never returned')
