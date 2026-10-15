@@ -14,7 +14,7 @@ test('the guide walks a new coach through every screen and opens Vercel with a w
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Your team’s own OpenSport, set up in a few clicks.')
   for (const name of ['GitHub', 'Vercel', 'Supabase']) await expect(page.getByRole('list', { name: 'The three free services your team uses' }).getByText(name, { exact: true })).toBeVisible()
   const steps = page.locator('.os-start-step h3')
-  await expect(steps).toHaveText(['Continue with GitHub', 'Sign in, or create your GitHub account', 'Name your team’s copy', 'Add the free database', 'Choose your setup code', 'Wait about two minutes'])
+  await expect(steps).toHaveText(['Continue with GitHub', 'Sign in, or create your GitHub account', 'Name your team’s copy', 'Add the free database', 'Choose your setup code', 'Wait a few minutes'])
   await expect(page.getByText('Create an account').first()).toBeVisible()
   for (const start of await page.getByRole('link', { name: 'Start my team' }).all()) {
     await expect(start).toHaveAttribute('target', '_blank')
@@ -43,8 +43,11 @@ test('coming back from Vercel shows the new team’s address and next steps', as
   expect(problems).toEqual([])
 })
 
-test('a return link to anywhere but a vercel.app site is ignored', async ({ page }) => {
+test('a return without a usable vercel.app address points to the Vercel dashboard instead', async ({ page }) => {
   await page.goto('/?deployment-url=' + encodeURIComponent('https://riverside-fc.vercel.app.attacker.test'))
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Your team’s own OpenSport, set up in a few clicks.')
+  await expect(page.getByRole('heading', { name: 'Your team’s site is live.' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Open my team' })).toHaveCount(0)
+  await expect(page.getByRole('link', { name: 'Open my Vercel dashboard' })).toHaveAttribute('href', 'https://vercel.com/dashboard')
+  await page.goto('/?project-name=riverside-fc&project-dashboard-url=' + encodeURIComponent('https://vercel.com/riverside/riverside-fc'))
+  await expect(page.getByRole('link', { name: 'Open my Vercel dashboard' })).toHaveAttribute('href', 'https://vercel.com/riverside/riverside-fc')
 })

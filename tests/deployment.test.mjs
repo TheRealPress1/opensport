@@ -1,15 +1,21 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { readDeployment } from '../src/lib/deployment.js'
+import { readDeployment, returnedFromVercel } from '../src/lib/deployment.js'
 
 test('the Vercel return link accepts only https vercel.app sites', () => {
   assert.deepEqual(readDeployment('?deployment-url=riverside-fc.vercel.app', ''), { url: 'https://riverside-fc.vercel.app', host: 'riverside-fc.vercel.app', dashboard: null })
   assert.equal(readDeployment('?deployment-url=https%3A%2F%2Friverside-fc.vercel.app%2Fsome%2Fpath', '').url, 'https://riverside-fc.vercel.app')
   assert.equal(readDeployment('', '#/start?deployment-url=riverside-fc.vercel.app').host, 'riverside-fc.vercel.app', 'parameters after the hash also count')
   for (const unsafe of ['http://riverside-fc.vercel.app', 'https://evil.test', 'https://riverside-fc.vercel.app.evil.test', 'javascript:alert(1)', 'https://vercel.app.evil.test']) {
-    assert.equal(readDeployment(`?deployment-url=${encodeURIComponent(unsafe)}`, ''), null, unsafe)
+    assert.deepEqual(readDeployment(`?deployment-url=${encodeURIComponent(unsafe)}`, ''), { url: null, host: null, dashboard: null }, unsafe)
   }
-  assert.equal(readDeployment('', ''), null)
+})
+
+test('any Vercel callback parameter counts as a return, and nothing else does', () => {
+  assert.equal(returnedFromVercel('', ''), false)
+  assert.equal(readDeployment('?utm_source=newsletter', ''), null)
+  assert.equal(returnedFromVercel('?project-name=riverside-fc', ''), true)
+  assert.deepEqual(readDeployment('?project-name=riverside-fc', ''), { url: null, host: null, dashboard: null }, 'without an address the page still welcomes the coach back')
 })
 
 test('the dashboard link is kept only when it points at vercel.com', () => {

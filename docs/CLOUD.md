@@ -36,6 +36,7 @@ All you need is an email address. It takes about ten minutes.
 4. **Choose your setup code.** See [Your setup code](#your-setup-code).
 5. **Deploy.** The first build also prepares your team's database. When it
    finishes, Vercel brings you back to OpenSport with a link to your new site.
+   If you stay on Vercel instead, choose **Continue to Dashboard**, then **Visit**.
 6. **Create your team.** Enter your setup code, your team's name, sport, and
    timezone, and your own name, email, and password. You become the team's
    administrator and are signed in.
@@ -107,8 +108,8 @@ deploys the update and applies any database changes during the build.
 ## Troubleshooting
 
 - **Supabase's Free plan is greyed out.** Supabase allows each person two active
-  free projects. Pause or delete one you don't need in the Supabase dashboard,
-  or sign up with a different email. You don't need a paid plan.
+  free projects. Pause or delete one you no longer need in the Supabase
+  dashboard, then add Supabase again.
 - **The build failed with "Database migration failed".** A brand-new database
   can take a few minutes to start. Wait a minute, then open **Deployments** in
   Vercel and choose **Redeploy** on the latest one.

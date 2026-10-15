@@ -1,5 +1,6 @@
 import { Component, lazy, Suspense, useSyncExternalStore } from 'react'
 import LandingPage from './components/LandingPage'
+import { returnedFromVercel } from './lib/deployment'
 
 // Live data code is loaded only after choosing the team entrypoint.
 const DemoTeamApp = lazy(() => import('./components/DemoTeamApp'))
@@ -36,7 +37,7 @@ export default function App() {
   )
   const demo = route === '#/demo' || window.location.pathname === '/demo'
   // Vercel returns coaches from the Deploy button with their new site's address.
-  const start = mode !== 'team' && (route.startsWith('#/start') || new URLSearchParams(window.location.search).has('deployment-url'))
+  const start = mode !== 'team' && (route.startsWith('#/start') || returnedFromVercel())
   return (
     <AppErrorBoundary>
       <Suspense fallback={<div role="status" className="grid min-h-screen place-items-center bg-[#f7f6ef] font-semibold text-emerald-950">Loading OpenSport…</div>}>
