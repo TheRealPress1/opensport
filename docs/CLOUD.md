@@ -35,16 +35,15 @@ You need a GitHub account. It takes about five minutes.
 6. **Create your team.** Enter your setup code, your team's name, sport, and
    timezone, and your own name, email, and password. You become the team's
    administrator and are signed in.
-7. **Turn off public sign-ups** (below), then invite your teammates from
-   **Manage**. Each invitation is a private link you send yourself, by text or
-   email. It works for one hour.
+7. **Invite your teammates** from **Manage**. Each invitation is a private
+   link you send yourself, by text or email. It works for one hour.
 
-## Turn off public sign-ups
+## Optional: turn off public sign-ups
 
 New Supabase projects let anyone create an account. Those accounts can't see
 anything in your team, and if one uses an address you later invite, OpenSport
-replaces it with a fresh account for your teammate. It's still tidier to switch
-sign-ups off. OpenSport reminds you in **Manage** until you do.
+replaces it with a fresh account for your teammate. You don't need to change
+anything, but if you'd like to switch sign-ups off:
 
 In Vercel, open your project's **Storage** tab, select your Supabase database,
 and choose **Open in Supabase**. Go to **Authentication**, then **Sign In /

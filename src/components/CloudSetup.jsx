@@ -35,7 +35,7 @@ export default function CloudSetup({ status, onRefresh, onCreated }) {
     <p className="text-sm text-slate-500">This is your team’s private OpenSport. Create it and your administrator account; you’ll invite teammates next.</p>
     {error && <p role="alert" className="mt-4 rounded-lg bg-red-50 p-3 text-red-700">{error}</p>}
     <form onSubmit={submit} className="mt-6 space-y-4">
-      <label className="block text-sm font-medium">Setup code<input type="password" autoComplete="off" required className={inputClass} {...field('code')} /><span className="text-xs text-slate-500">The private code you chose when you deployed OpenSport.</span></label>
+      <label className="block text-sm font-medium">Setup code<input type="password" autoComplete="off" required className={inputClass} {...field('code')} /><span className="text-xs text-slate-500">The phrase you typed next to OPENSPORT_SETUP_CODE on Vercel.</span></label>
       <fieldset className="space-y-4 border-t border-slate-200 pt-4">
         <legend className="sr-only">Your team</legend>
         <label className="block text-sm font-medium">Team name<input required maxLength={100} className={inputClass} {...field('team_name')} /></label>

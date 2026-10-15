@@ -64,17 +64,6 @@ async function replaceForeignAccount(env, email) {
   return null;
 }
 
-async function signupsDisabled(env) {
-  try { return (await supabaseApi(env, '/auth/v1/settings', undefined, env.anonKey))?.disable_signup === true; }
-  catch { return null; }
-}
-
-// The Supabase dashboard page where an owner turns off public sign-ups.
-function authSettingsUrl(env) {
-  const host = new URL(env.url).hostname;
-  return host.endsWith('.supabase.co') ? `https://supabase.com/dashboard/project/${host.split('.')[0]}/auth/providers` : null;
-}
-
 async function createTeam(env, body) {
   const teamName = String(body.team_name || '').trim();
   const name = String(body.name || '').trim();
@@ -136,8 +125,8 @@ export function createSetupHandler(readEnvironment, readSetupCode, { failureDela
     try {
       const env = requireEnvironment(readEnvironment());
       if (request.method === 'GET') {
-        const [status, disabled] = await Promise.all([teamStatus(env), signupsDisabled(env)]);
-        return new Response(JSON.stringify({ ...status, setupCode: setupCodeState(readSetupCode()), ownerRecovery: ownerRecovery() === true, signupsDisabled: disabled, authSettingsUrl: authSettingsUrl(env) }), { status: 200, headers });
+        const status = await teamStatus(env);
+        return new Response(JSON.stringify({ ...status, setupCode: setupCodeState(readSetupCode()), ownerRecovery: ownerRecovery() === true }), { status: 200, headers });
       }
       if (request.method !== 'POST') throw new ApiError(405, 'Use GET or POST');
       if (!originAllowed(request, env.allowedOrigins || [])) throw new ApiError(403, 'This origin is not allowed');
