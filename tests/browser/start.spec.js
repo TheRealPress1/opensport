@@ -11,10 +11,12 @@ async function watch(page) {
 test('the guide walks a new coach through every screen and opens Vercel with a way back', async ({ page }) => {
   const problems = await watch(page)
   await page.goto('/#/start')
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Your team’s own OpenSport, set up in a few clicks.')
-  for (const name of ['GitHub', 'Vercel', 'Supabase']) await expect(page.getByRole('list', { name: 'The three free services your team uses' }).getByText(name, { exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Your team, live in a few clicks.')
+  const stack = page.getByRole('list', { name: 'The three free services that run your team' })
+  for (const name of ['GitHub', 'Vercel', 'Supabase']) await expect(stack.getByText(name, { exact: true })).toBeVisible()
+  await expect(stack.locator('svg.os-logo')).toHaveCount(3)
   const steps = page.locator('.os-start-step h3')
-  await expect(steps).toHaveText(['Continue with GitHub', 'Sign in, or create your GitHub account', 'Name your team’s copy', 'Add the free database', 'Choose your setup code', 'Wait a few minutes'])
+  await expect(steps).toHaveText(['Continue with GitHub', 'Create your GitHub account', 'Name your team', 'Add the free database', 'Pick a setup code', 'Wait a few minutes'])
   await expect(page.getByText('Create an account').first()).toBeVisible()
   for (const start of await page.getByRole('link', { name: 'Start my team' }).all()) {
     await expect(start).toHaveAttribute('target', '_blank')
