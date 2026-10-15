@@ -27,6 +27,15 @@ test('the guide walks a new coach through every screen and opens Vercel with a w
     expect(deploy.searchParams.get('redirect-url')).toBe('https://getopensport.vercel.app/')
     expect(JSON.parse(deploy.searchParams.get('stores'))).toEqual([{ type: 'integration', integrationSlug: 'supabase', productSlug: 'supabase' }])
   }
+  const header = page.getByRole('navigation', { name: 'Main navigation' })
+  await expect(header.getByRole('link', { name: '← Home' })).toHaveAttribute('href', '/')
+  await expect(page.getByRole('link', { name: 'OpenSport home' })).toHaveAttribute('href', '/')
+  if (await header.getByRole('button', { name: 'Help' }).isVisible()) {
+    await expect(header.getByRole('link', { name: 'Try the demo' })).toHaveAttribute('href', '/#/demo')
+    await header.getByRole('button', { name: 'Help' }).click()
+    await expect(page.getByRole('heading', { name: 'If something looks different.' })).toBeInViewport()
+    await expect(page).toHaveURL(/#\/start$/)
+  }
   await page.getByText('Supabase’s Free plan is greyed out').click()
   await expect(page.getByText('two active free projects')).toBeVisible()
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy()

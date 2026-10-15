@@ -1,6 +1,11 @@
 .project-site.os-start { min-height: 100vh; }
-.project-site .os-start-nav { min-height: 72px; display: flex; align-items: center; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 650; }
-.project-site .os-start-nav a:hover { color: var(--orange); }
+.project-site.os-start .os-wordmark img { width: 34px; height: 34px; margin-right: 3px; }
+.project-site .os-start-nav-help { min-height: 44px; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.project-site .os-start-nav-help:hover { color: var(--orange); }
+.project-site .os-start-nav-help:focus-visible { outline: 3px solid var(--orange); outline-offset: 5px; }
+.project-site .os-nav nav .os-start-nav-cta { gap: 10px; padding: 10px 16px; border-radius: 3px; background: var(--green); color: var(--paper); }
+.project-site .os-nav nav .os-start-nav-cta:hover { background: var(--green-dark); color: var(--paper); }
+.project-site .os-start-nav-cta .os-arrow { width: 14px; height: 14px; }
 .project-site .os-start code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em; background: #ebe9de; color: var(--ink); padding: 2px 6px; border-radius: 3px; }
 
 /* Intro: the three services that run a team, as a left-to-right stack. */
